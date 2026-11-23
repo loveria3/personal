@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="Malgun Gothic, sans-serif">
+<rect width="800" height="600" fill="#fff"/>
+<rect width="800" height="64" fill="#fff"/><line x1="0" y1="64" x2="800" y2="64" stroke="#e5e7eb"/>
+<path d="M40 44 L54 20 L68 44 Z" fill="#000"/><text x="78" y="41" font-size="18" font-weight="800" fill="#000">Vercel</text>
+<rect x="628" y="16" width="80" height="34" rx="8" fill="#fff" stroke="#d1d5db"/><text x="668" y="38" font-size="15" text-anchor="middle" font-weight="700" fill="#111">Log In</text>
+<rect x="716" y="16" width="70" height="34" rx="8" fill="#111"/><text x="751" y="38" font-size="15" text-anchor="middle" font-weight="700" fill="#fff">Sign Up</text>
+<text x="400" y="200" font-size="28" font-weight="800" text-anchor="middle" fill="#111">Log in to Vercel</text>
+<rect x="250" y="300" width="300" height="48" rx="8" fill="#fff" stroke="#d1d5db"/>
+<circle cx="292" cy="324" r="10" fill="none" stroke="#4285f4" stroke-width="4"/><text x="410" y="330" font-size="16" text-anchor="middle" font-weight="700" fill="#111">Continue with Google</text>
+<rect x="250" y="360" width="300" height="48" rx="8" fill="#24292f"/><text x="400" y="390" font-size="16" text-anchor="middle" font-weight="700" fill="#fff">Continue with GitHub</text>
+<rect x="250" y="420" width="300" height="48" rx="8" fill="#fff" stroke="#d1d5db"/><text x="400" y="450" font-size="16" text-anchor="middle" fill="#555">Continue with Email</text>
+<text x="400" y="520" font-size="14" text-anchor="middle" fill="#6b7280">Don't have an account? Sign Up</text>
+</svg>

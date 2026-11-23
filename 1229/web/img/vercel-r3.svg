@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" font-family="Malgun Gothic, sans-serif">
+<rect width="800" height="560" fill="#fafafa"/>
+<rect width="800" height="60" fill="#fff"/><line x1="0" y1="60" x2="800" y2="60" stroke="#e5e7eb"/>
+<path d="M30 42 L42 20 L54 42 Z" fill="#000"/><text x="72" y="38" font-size="16" fill="#999">/</text>
+<text x="90" y="38" font-size="16" font-weight="700" fill="#111">kim's projects</text><rect x="222" y="22" width="56" height="22" rx="11" fill="#f3f4f6"/><text x="250" y="38" font-size="12" text-anchor="middle" fill="#555">Hobby</text>
+<g font-size="14" fill="#555"><text x="30" y="96" font-weight="700" fill="#111">Overview</text><text x="120" y="96">Integrations</text><text x="230" y="96">Deployments</text><text x="345" y="96">Usage</text><text x="410" y="96">Settings</text></g>
+<line x1="24" y1="108" x2="100" y2="108" stroke="#111" stroke-width="2"/><line x1="0" y1="110" x2="800" y2="110" stroke="#e5e7eb"/>
+<rect x="40" y="132" width="520" height="40" rx="8" fill="#fff" stroke="#d1d5db"/><text x="60" y="158" font-size="14" fill="#9ca3af">🔍 Search Projects…</text>
+<rect x="580" y="132" width="180" height="40" rx="8" fill="#111"/><text x="670" y="158" font-size="14" text-anchor="middle" font-weight="700" fill="#fff">Add New…  ▾</text>
+<rect x="40" y="196" width="350" height="150" rx="10" fill="#fff" stroke="#d1d5db"/>
+<rect x="60" y="216" width="36" height="36" rx="18" fill="#f28c28"/><text x="78" y="240" font-size="15" text-anchor="middle" fill="#fff" font-weight="800">g</text>
+<text x="110" y="232" font-size="16" font-weight="800" fill="#111">gray-engine-ten</text><text x="110" y="252" font-size="13" fill="#6b7280">gray-engine-ten.vercel.app</text>
+<text x="60" y="300" font-size="13" fill="#6b7280">⇪ Vercel Drop</text><text x="60" y="324" font-size="13" fill="#6b7280">10m ago</text>
+<rect x="410" y="196" width="350" height="150" rx="10" fill="#fff" stroke="#d1d5db"/>
+<rect x="430" y="216" width="36" height="36" rx="18" fill="#9ca3af"/><text x="448" y="240" font-size="15" text-anchor="middle" fill="#fff" font-weight="800">j</text>
+<text x="480" y="232" font-size="16" font-weight="800" fill="#111">jiae-walking</text><text x="480" y="252" font-size="13" fill="#6b7280">jiae-walking.vercel.app</text>
+<text x="430" y="300" font-size="13" fill="#6b7280">⇪ Vercel Drop</text><text x="430" y="324" font-size="13" fill="#6b7280">3d ago</text>
+<text x="40" y="400" font-size="14" fill="#6b7280">처음 올린 프로젝트가 카드로 보입니다. 이름 = 내 주소 앞부분</text>
+</svg>

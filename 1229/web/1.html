@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1차시 — 설계도를 그리다: 강의안과 PPT 교안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="lesson.css?v=1229">
+<style>
+.gptlink{margin:12px 0 0;font-size:14.5px;color:var(--sub)}
+.gptlink a{font-weight:700;text-decoration:none;border-bottom:2px solid #10a37f;color:#0b7a5e}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="home" href="index.html">← 자료실 처음으로</a>
+<header>
+  <p class="kicker">1차시 · 120분 · 무료 클로드(claude.ai)</p>
+  <h1>설계도를 그리다 — <em>강의안과 PPT 교안</em> 만들기</h1>
+  <p class="sub"><b>대상 카드 한 장</b> → 커리큘럼 → 1회기 강의안 → <b>PPT 파일</b>까지 클로드로.</p>
+  <div class="toprow">
+    <a class="btn line" href="files/target-card.txt" download="대상카드.txt">대상 카드(txt) ↓</a>
+    <a class="btn line" href="files/easy-guide.txt" download="쉬운교안지침.txt">쉬운 교안 지침(txt) ↓</a>
+    <a class="btn line" href="files/store-lesson1.pptx" download="편의점_1회기_비상용.pptx">비상용 PPT ↓</a>
+    <a class="btn line" href="gpt.html" target="_blank" rel="noopener">🟢 챗GPT로 따라 하기 ↗</a>
+  </div>
+</header>
+
+<div class="hook">
+  <p class="q">교안 만드는 데 수업보다 시간이 더 오래 걸린 적 있나요?</p>
+  <p>오늘은 <b>"누구에게, 무엇을"</b>만 정해 주면 클로드가 초안을 만들고, <b>판단과 확인은 사회복지사가</b> 합니다.</p>
+  <div class="take"><span>오늘 가져갈 것</span><span>📋 4회기 커리큘럼표</span><span>📝 1회기 강의안</span><span>📊 PPT 교안 파일</span><span>📄 보호자 안내문</span><span>💬 카톡으로 받은 요약</span></div>
+</div>
+
+<div class="tip">🧭 번호 단계는 함께, 점선 상자 <b>⚡</b>는 기다리는 동안 한 걸음 더. 프롬프트 상자의 <b>[대괄호]</b>는 내 내용으로 바꿔 쓰세요.</div>
+<nav class="jump">
+  <a href="#s0">준비</a><a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a><a href="#s5">5</a><a href="#q">퀴즈</a>
+</nav>
+
+<section id="s0" data-n="준비" data-t="준비">
+  <div class="head"><span class="num">0</span><h2>준비 — 클로드 켜고 재료 받기</h2><span class="time">10분</span></div>
+  <ol class="step">
+    <li>크롬에서 <b>claude.ai</b> 로그인 (구글 계정으로 가입 가능)</li>
+    <li>왼쪽 아래 내 이름 → <b>설정 → 기능</b> → <b>코드 실행 및 파일 생성</b> 켜기 — PPT 파일·스킬에 꼭 필요해요</li>
+    <li>위의 <b>대상 카드</b>와 <b>쉬운 교안 지침</b> 두 파일 내려받기</li>
+  </ol>
+  <table>
+    <tr><th>파일 올리기</th><td>입력창 왼쪽 <b>＋</b> → <b>파일 업로드</b> (또는 파일을 입력창에 끌어다 놓기)</td></tr>
+    <tr><th>결과 받기</th><td>클로드가 만든 파일 카드의 <b>다운로드</b> 단추</td></tr>
+    <tr><th>새 대화</th><td>왼쪽 위 <b>새 채팅</b> — 주제가 바뀌면 새 대화가 더 정확하고 한도도 아껴요</td></tr>
+  </table>
+  <p class="warnnote">⚠ 무료는 <b>사용 한도</b>가 있어요. PPT 파일 만들기가 가장 많이 씁니다. 한도에 걸리면 당황하지 말고 <b>비상용 자료</b>로 다음 단계를 이어 가세요.</p>
+</section>
+
+<section id="s1" data-n="1" data-t="복지현장 AI 원칙">
+  <div class="head"><span class="num">1</span><h2>복지현장에서 AI 쓸 때 세 가지 약속</h2><span class="time">10분</span></div>
+  <table>
+    <tr><th>① 개인정보 금지</th><td>이용인 <b>실명 · 사진 · 사례 · 연락처</b>, 상담기록은 넣지 않아요. 사례는 <b>가상 인물(민수 씨)</b>로 바꿔서.</td></tr>
+    <tr><th>② 사실 확인</th><td>복지제도 기준 · 금액 · 전화번호는 AI가 <b>틀리게</b> 말할 수 있어요. 공식 출처로 다시 확인.</td></tr>
+    <tr><th>③ 결정은 내가</th><td>AI는 <b>초안</b>. 우리 이용인에게 맞는지는 사회복지사가 판단합니다.</td></tr>
+  </table>
+  <div class="biz">
+    <p class="bt">발달장애인 교안은 이렇게 <span class="badge biz">쉬운 교안</span></p>
+    <ul>
+      <li>한 문장에 한 가지 · 짧고 쉬운 낱말 · 존댓말</li>
+      <li>한 화면에 메시지 하나 · 큰 글씨 · 그림과 함께</li>
+      <li>설명 → 보여 주기 → 같이 하기 → 혼자 하기</li>
+    </ul>
+    <p>이 규칙을 매번 말하지 않도록 <b>쉬운 교안 지침.txt</b>에 적어 두었어요. 파일만 같이 올리면 됩니다.</p>
+  </div>
+</section>
+
+<section id="s2" data-n="2" class="key" data-t="커리큘럼과 강의안">
+  <div class="head"><span class="num">2</span><h2>대상 카드로 커리큘럼 → 1회기 강의안</h2><span class="badge hot">핵심</span><span class="time">25분</span></div>
+  <p class="one">먼저 <b>대상 카드.txt</b>를 내 수업에 맞게 고쳐요. 오늘은 예시(편의점에서 물건 사기)로 해도 됩니다.</p>
+  <div class="box"><div class="bar"><span>프롬프트 1-1 — 커리큘럼 (두 파일 올리고)</span></div>
+<div class="txt">올린 대상카드.txt의 참여자에게 맞는 교육 커리큘럼을 표로 만들어줘.
+열: 회기 / 제목 / 목표 / 주요 내용 / 직접 해 보는 활동 / 준비물.
+쉬운교안지침.txt를 따르고, 회기마다 직접 해 보는 활동을 1개 이상 넣어줘.</div></div>
+  <div class="box"><div class="bar"><span>프롬프트 1-2 — 되묻기로 다듬기</span></div>
+<div class="txt">참여자 중 <span class="ph">[글을 거의 읽지 못하는 분이 3명]</span> 있어.
+이분들도 함께할 수 있게 커리큘럼을 고쳐줘. 바뀐 곳만 굵게 표시해줘.</div></div>
+  <div class="box"><div class="bar"><span>프롬프트 1-3 — 1회기 강의안</span></div>
+<div class="txt">이 커리큘럼의 <span class="ph">[1]</span>회기를 실제 수업에 쓸 강의안으로 만들어줘.
+도입-전개-정리 순서로, 단계마다 시간(분) · 강사가 할 말 · 참여자 활동 · 준비물.
+강사가 할 말은 참여자에게 직접 말하듯 쉬운 존댓말로.
+마지막에 참여자가 어려워할 수 있는 점과 도와주는 방법 3가지.</div></div>
+  <ul class="chk">
+    <li>시간을 더하면 회당 시간(예: 40분)과 맞는지</li>
+    <li>어려운 낱말이 남았으면 → <span class="say">[낱말]을 더 쉬운 말로 바꿔줘. 나머지는 그대로 둬.</span></li>
+    <li>전화번호 · 금액이 들어갔으면 → <span class="say">원본에 없는 값은 [확인 필요]로 바꿔줘</span></li>
+  </ul>
+  <p class="gptlink">🟢 챗GPT로는 — 같은 프롬프트 그대로 → <a href="gpt.html#g1" target="_blank" rel="noopener">따라 하기 1</a></p>
+</section>
+
+<div class="rest">☕ 쉬는 시간 10분</div>
+
+<section id="s3" data-n="3" class="key" data-t="PPT 교안 만들기">
+  <div class="head"><span class="num">3</span><h2>강의안으로 PPT 교안 파일 만들기</h2><span class="badge hot">핵심</span><span class="time">30분</span></div>
+  <p class="one">같은 대화에서 이어서 부탁합니다. <b>한 번에 제대로</b> 요청할수록 한도를 아낄 수 있어요.</p>
+  <div class="box"><div class="bar"><span>프롬프트 2-1 — PPT 파일 만들기</span></div>
+<div class="txt">위 1회기 강의안으로 수업 때 TV 화면에 띄울 PPT 파일(.pptx)을 만들어줘.
+- <span class="ph">[10]</span>장, 한 장에 메시지 하나
+- 제목 44pt, 본문 32pt 이상, 흰 바탕에 진한 남색 글씨
+- 장마다 내용을 보여 주는 큰 이모지나 단순한 그림
+- 순서가 있는 내용은 1 → 2 → 3 화살표로
+- 슬라이드 노트에 강사가 할 말
+파일 이름은 <span class="ph">[편의점_1회기]</span>.pptx로.</div></div>
+  <ol class="step">
+    <li>파일 카드의 <b>다운로드</b> → 파워포인트(또는 한쇼·구글 슬라이드)로 열기</li>
+    <li>장을 넘기며 <b>글자 크기 · 맞춤법 · 순서</b> 확인</li>
+  </ol>
+  <div class="box"><div class="bar"><span>프롬프트 2-2 — 필요한 장만 고치기</span></div>
+<div class="txt"><span class="ph">[3]</span>번 슬라이드만 고쳐줘: <span class="ph">[글을 반으로 줄이고 그림을 더 크게]</span>.
+나머지 슬라이드는 그대로 두고 같은 이름으로 다시 저장해줘.</div></div>
+  <ul class="chk">
+    <li>슬라이드 노트(발표자 메모)에 강사가 할 말이 들어갔는지</li>
+    <li>글이 넘치는 장이 있으면 → <span class="say">글이 상자를 넘치는 장을 찾아서 줄여줘</span></li>
+  </ul>
+  <div class="tip">🛟 한도에 걸렸거나 파일이 안 만들어지면 — 설정 → 기능의 <b>코드 실행 및 파일 생성</b>이 켜져 있는지 확인. 그래도 안 되면 <a href="files/store-lesson1.pptx" download="편의점_1회기_비상용.pptx"><b>비상용 PPT</b></a>를 받아 4번을 함께 합니다.</div>
+  <div class="adv"><p class="at">사진이 있는 PPT</p>
+    <div class="box"><div class="bar"><span>⚡ 내가 찍은 사진 넣기</span></div>
+<div class="txt">올린 사진 <span class="ph">[편의점 계산대.jpg]</span>를 <span class="ph">[5]</span>번 슬라이드 왼쪽에 크게 넣고,
+오른쪽에 "돈을 내요" 한 줄만. 나머지는 그대로 둬.</div></div>
+    <p>⚠ 이용인 얼굴이 나온 사진은 쓰지 않아요. 장소 · 물건 사진만.</p>
+  </div>
+  <p class="gptlink">🟢 챗GPT로는 — 파일이 안 만들어지면 개요를 받아 Gamma·Canva로 → <a href="gpt.html#g2" target="_blank" rel="noopener">따라 하기 2</a></p>
+</section>
+
+<section id="s4" data-n="4" data-t="스킬의 이해">
+  <div class="head"><span class="num">4</span><h2>스킬의 이해 — PPT는 누가 만들었을까?</h2><span class="time">15분</span></div>
+  <p class="one">방금 PPT를 만든 건 클로드에 들어 있는 <b>기본 스킬(pptx)</b> 덕분이에요. 스킬은 클로드의 <b>업무 매뉴얼</b>입니다.</p>
+  <ol class="step">
+    <li>설정 → <b>사용자 지정 → 스킬</b> — 이미 들어 있는 스킬 목록 보기</li>
+    <li>무엇이 있는지 확인하고 아래 표와 맞춰 보기</li>
+  </ol>
+  <table>
+    <tr><th>PPT (pptx)</th><td>교육 교안 · 프로그램 설명회 자료</td></tr>
+    <tr><th>워드 (docx)</th><td>보호자 안내문 · 프로그램 계획서 · 결과 보고서</td></tr>
+    <tr><th>엑셀 (xlsx)</th><td>출석부 · 활동 기록표 · 만족도 결과 정리</td></tr>
+    <tr><th>PDF</th><td>인쇄용 활동지 · 여러 파일 하나로 합치기</td></tr>
+  </table>
+  <div class="box"><div class="bar"><span>프롬프트 3 — 같은 강의안으로 보호자 안내문</span></div>
+<div class="txt">위 커리큘럼으로 보호자께 보낼 프로그램 안내문을 워드 파일(.docx) A4 한 장으로 만들어줘.
+프로그램 목적 · 4회기 일정표 · 가정에서 함께 해 주실 일 · 문의처.
+날짜와 문의처는 [확인 필요]로 비워 두고, 정중한 존댓말로.</div></div>
+  <ul class="chk">
+    <li>하나의 강의안이 <b>PPT · 안내문 · 활동지</b>로 바뀌는 것 확인 — 재료는 하나, 결과물은 여러 개</li>
+  </ul>
+  <div class="tip">💡 2차시에는 <b>나만의 스킬</b>을 직접 만들어요. "우리 센터 교안은 이렇게"를 한 번 적어 두면, 다음부터는 한 줄로.</div>
+  <div class="adv"><p class="at">활동지까지</p>
+    <div class="box"><div class="bar"><span>⚡ 인쇄용 활동지</span></div>
+<div class="txt">1회기에서 쓸 활동지를 PDF 한 장으로 만들어줘. 그림 보고 고르기 3문제, 동그라미 치는 칸을 크게.
+쉬운교안지침.txt를 따라줘.</div></div>
+  </div>
+  <p class="gptlink">🟢 챗GPT로는 — 스킬 대신 '프로젝트 지시사항' → <a href="gpt.html#g3" target="_blank" rel="noopener">따라 하기 3</a></p>
+</section>
+
+<section id="s5" data-n="5" data-t="MCP 연결">
+  <div class="head"><span class="num">5</span><h2>MCP 이해와 연결 — 카톡으로 받아 보기</h2><span class="time">20분</span></div>
+  <p class="one"><b>커넥터(MCP)</b>는 클로드와 다른 프로그램을 잇는 <b>연결선</b>입니다. 오늘은 만든 결과를 <b>내 카톡</b>으로 받아 봅니다.</p>
+  <table>
+    <tr><th>스킬</th><td>클로드의 <b>업무 매뉴얼</b> — 어떻게 만들지</td></tr>
+    <tr><th>커넥터(MCP)</th><td>클로드의 <b>손발</b> — 다른 프로그램에 직접 보내고 가져오기 (충전기 USB-C 같은 표준 규격)</td></tr>
+    <tr><th>무료 클로드</th><td>내가 직접 추가하는 커넥터(사용자 정의) <b>1개</b>까지 — 오늘은 카카오톡 하나</td></tr>
+  </table>
+  <h3>① 카카오 도구함 만들기</h3>
+  <table>
+    <tr><th>PlayMCP</th><td>크롬에서 <b>PlayMCP</b> 검색 → playmcp.kakao.com → 오른쪽 위 <b>로그인 → 카카오 로그인</b></td></tr>
+    <tr><th>담기</th><td><b>'카카오톡 나챗방'</b>(만든 곳 Kakao) → <b>도구함에 담기</b></td></tr>
+    <tr><th>주소 복사</th><td>위쪽 <b>도구함</b> → <b>도구함 주소(URL) 복사</b></td></tr>
+  </table>
+  <h3>② 클로드에 연결하기</h3>
+  <table>
+    <tr><th>커넥터</th><td>설정 → <b>사용자 지정 → 커넥터</b> → <b>＋ → 사용자 정의 커넥터 추가</b></td></tr>
+    <tr><th>붙여넣기</th><td>이름 <b>카카오톡</b>, 주소 칸에 복사한 주소 → <b>추가</b> → <b>연결</b> → 카카오 <b>허용</b></td></tr>
+    <tr><th>켜기</th><td>입력창 <b>＋ → 커넥터</b>에서 <b>카카오톡</b>이 켜져 있는지</td></tr>
+  </table>
+  <div class="box"><div class="bar"><span>연결 확인 프롬프트</span></div>
+<div class="txt">카카오톡 나와의 채팅방에 "클로드 연결 성공! 🎉" 이라고 보내줘.</div></div>
+  <div class="box"><div class="bar"><span>프롬프트 4 — 오늘 만든 강의안 요약 보내기</span></div>
+<div class="txt">오늘 만든 1회기 강의안을 수업 직전에 폰으로 볼 수 있게
+시간 순서대로 다섯 줄로 줄여서 카카오톡 나와의 채팅방에 보내줘. 보내기 전에 보낼 글을 먼저 보여줘.</div></div>
+  <details class="more"><summary>안 될 때 — 여기부터 보세요</summary>
+    <table>
+      <tr><th>도구함 주소가 안 보여요</th><td>PlayMCP에 <b>로그인</b>했는지 → 도구함에 카카오톡 나챗방이 <b>담겼는지</b></td></tr>
+      <tr><th>추가가 안 눌려요</th><td>주소 앞뒤 <b>빈칸</b> · 주소 전체가 복사됐는지 / 이미 다른 사용자 정의 커넥터가 있는지(무료는 1개)</td></tr>
+      <tr><th>"보낼 수 없어요"</th><td>입력창 <b>＋ → 커넥터</b>에서 카카오톡 켜기 → <b>새 채팅</b>에서 다시</td></tr>
+      <tr><th>카톡이 안 와요</th><td><b>허용</b>을 눌렀는지, 폰과 같은 <b>카카오 계정</b>인지 · 채팅 목록에 <b>나와의 채팅</b>이 있는지</td></tr>
+    </table>
+  </details>
+  <p class="warnnote">⚠ 커넥터는 <b>내 계정에 들어가는 출입증</b>이에요. 기관 업무 계정에 연결할 땐 기관 담당자와 먼저 상의하세요.</p>
+  <p class="gptlink">🟢 챗GPT로는 — 무료로는 커넥터를 직접 추가할 수 없어요 → <a href="gpt.html#g4" target="_blank" rel="noopener">따라 하기 4</a></p>
+</section>
+
+<section id="q" data-n="퀴즈" data-t="OX 퀴즈">
+  <div class="head"><span class="num y">?</span><h2>오늘의 OX 퀴즈</h2><span class="time">5분</span></div>
+  <div class="quiz">
+    <details><summary>강의안을 더 정확하게 만들려면 이용인 실제 사례를 자세히 넣는 게 좋다.</summary>
+      <p><span class="x">X</span> — 실명 · 사례는 넣지 않아요. <b>가상 인물</b>로 바꿔도 충분히 좋은 강의안이 나옵니다.</p></details>
+    <details><summary>쉬운 교안 규칙을 파일로 만들어 두면 매번 길게 설명하지 않아도 된다.</summary>
+      <p><span class="o">O</span> — 지침 파일을 같이 올리면 됩니다. 2차시에는 이걸 <b>스킬</b>로 만들어요.</p></details>
+    <details><summary>PPT 한 장만 고치고 싶으면 처음부터 다시 만들어 달라고 해야 한다.</summary>
+      <p><span class="x">X</span> — <b>"3번만 고쳐줘. 나머지는 그대로 둬."</b> 한도도 아끼고 결과도 안정적이에요.</p></details>
+    <details><summary>스킬은 업무 매뉴얼, 커넥터(MCP)는 다른 프로그램과 잇는 손발이다.</summary>
+      <p><span class="o">O</span> — 스킬은 <b>어떻게</b>, 커넥터는 <b>어디로</b>.</p></details>
+  </div>
+</section>
+
+<div class="end">
+  <h2>오늘 기억할 것 세 줄</h2>
+  <p><b>1.</b> <b>대상 카드 + 쉬운 교안 지침</b>만 있으면 커리큘럼 · 강의안이 나온다</p>
+  <p><b>2.</b> 강의안 하나로 <b>PPT · 안내문 · 활동지</b>까지 — 고칠 땐 "나머지는 그대로 둬"</p>
+  <p><b>3.</b> 개인정보는 넣지 않고, 사실은 확인하고, <b>결정은 내가</b></p>
+  <p class="next">📣 다음 시간 — 오늘 만든 강의안으로 <b>휴대폰으로 보는 웹교안</b>을 만들어 QR로 나누고, <b>나만의 교안 스킬</b>을 만듭니다. 오늘 클로드에게 <b>자꾸 반복해서 한 말</b>을 메모해 오세요.</p>
+</div>
+
+<footer>AI 교안 제작 특강 · 1차시 &nbsp;|&nbsp; 한국재활데이케어센터 사회복지사 대상 · 강사 강지애</footer>
+</div>
+<script src="lesson.js?v=1229"></script>
+</body>
+</html>

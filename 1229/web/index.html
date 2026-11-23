@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 교안 제작 특강 자료실 — 사회복지사를 위한 2차시</title>
+<meta name="author" content="강지애">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --stone:#E4E5DF;
+  --surface:#F7F7F4;
+  --ink:#21231F;
+  --moss:#6B7263;
+  --canola:#F2C230;
+  --line:rgba(33,35,31,.16);
+  --sans:"Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;
+  --num:"Space Grotesk",var(--sans);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--stone);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.6;
+  letter-spacing:-.01em;
+}
+
+.wrap{max-width:760px;margin:0 auto;padding:64px 24px 96px}
+
+/* ── 머리말 ───────────────────────────── */
+.masthead{margin-bottom:48px}
+.eyebrow{
+  font-family:var(--num);
+  font-size:12px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--moss);
+  margin:0 0 14px;
+}
+.masthead h1{
+  font-size:clamp(34px,8vw,52px);
+  font-weight:800;
+  letter-spacing:-.035em;
+  line-height:1.12;
+  margin:0 0 14px;
+}
+.masthead h1 em{
+  font-style:normal;
+  background:linear-gradient(to top,var(--canola) 34%,transparent 34%);
+  padding:0 .06em;
+}
+.lead{margin:0;color:var(--moss);font-size:16px;max-width:36em}
+
+/* ── 강사 표기 ─────────────────────────── */
+.by{margin:16px 0 0;font-size:15px;color:var(--moss)}
+.by a{
+  color:var(--ink);
+  font-weight:700;
+  text-decoration:none;
+  background:linear-gradient(to top,var(--canola) 30%,transparent 30%);
+  padding:0 .12em;
+  transition:background-size .25s ease;
+}
+.by a:hover,.by a:focus-visible{
+  background:linear-gradient(to top,var(--canola) 100%,transparent 100%);
+}
+.by .go{font-family:var(--num);font-size:13px;margin-left:2px}
+
+/* ── 차시 목록 ─────────────────────────── */
+.rail{
+  list-style:none;
+  margin:0;padding:0;
+  border-top:1px solid var(--line);
+}
+.rail li{border-bottom:1px solid var(--line)}
+
+.card{
+  display:grid;
+  grid-template-columns:76px 1fr 28px;
+  align-items:center;
+  gap:8px;
+  padding:22px 12px 22px 4px;
+  text-decoration:none;
+  color:inherit;
+  background:transparent;
+  transition:background .28s ease,padding .28s ease;
+}
+.card:hover,.card:focus-visible{
+  background:var(--surface);
+  padding-left:16px;
+}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+
+.no{
+  font-family:var(--num);
+  font-size:40px;font-weight:700;
+  line-height:1;
+  letter-spacing:-.04em;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--ink);
+  transition:color .28s ease,-webkit-text-stroke-color .28s ease;
+}
+.card:hover .no,.card:focus-visible .no{
+  color:var(--canola);
+  -webkit-text-stroke-color:var(--ink);
+}
+
+.label{
+  font-size:12px;font-weight:600;
+  letter-spacing:.06em;
+  color:var(--moss);
+  margin:0 0 3px;
+}
+.title{
+  font-size:19px;font-weight:700;
+  letter-spacing:-.025em;
+  margin:0;
+}
+.desc{
+  font-size:14px;
+  color:var(--moss);
+  margin:4px 0 0;
+}
+
+.arrow{
+  font-family:var(--num);
+  font-size:18px;
+  color:var(--moss);
+  text-align:right;
+  transition:transform .28s ease,color .28s ease;
+}
+.card:hover .arrow,.card:focus-visible .arrow{
+  transform:translateX(4px);
+  color:var(--ink);
+}
+
+/* ── 꼬리말 ───────────────────────────── */
+.foot{
+  margin-top:44px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  font-size:13px;
+  color:var(--moss);
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 16px;
+  justify-content:space-between;
+}
+.foot a{color:var(--moss)}
+
+/* ── 등장 효과 ─────────────────────────── */
+@media (prefers-reduced-motion:no-preference){
+  .rail li{opacity:0;transform:translateY(10px);animation:rise .5s ease forwards}
+  .rail li:nth-child(1){animation-delay:.05s}
+  .rail li:nth-child(2){animation-delay:.11s}
+  .rail li:nth-child(3){animation-delay:.17s}
+  .rail li:nth-child(4){animation-delay:.23s}
+  .rail li:nth-child(5){animation-delay:.29s}
+  .rail li:nth-child(6){animation-delay:.35s}
+  .rail li:nth-child(7){animation-delay:.41s}
+  .rail li:nth-child(8){animation-delay:.47s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+
+/* ── 7차시(집에서) ─────────────────────── */
+.rail li.home .no{-webkit-text-stroke-color:var(--moss)}
+.rail li.home .card:hover .no,.rail li.home .card:focus-visible .no{
+  -webkit-text-stroke-color:var(--ink);
+}
+.tag{
+  display:inline-block;
+  font-size:11px;font-weight:700;
+  letter-spacing:.04em;
+  color:var(--moss);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:1px 6px;
+  margin-left:6px;
+  vertical-align:2px;
+}
+
+/* ── 참고 자료 ─────────────────────────── */
+.extra{margin-top:46px}
+.extra-head{
+  display:flex;align-items:baseline;gap:10px;
+  margin:0 0 14px;
+}
+.extra-head h2{
+  font-size:15px;font-weight:700;
+  letter-spacing:-.015em;
+  margin:0;
+}
+.extra-head .k{
+  font-family:var(--num);
+  font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--moss);
+}
+.ref{
+  display:grid;
+  grid-template-columns:1fr 28px;
+  align-items:center;
+  gap:8px;
+  padding:20px 12px 20px 16px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--surface);
+  text-decoration:none;
+  color:inherit;
+  transition:border-color .28s ease,transform .28s ease;
+}
+.ref:hover,.ref:focus-visible{
+  border-color:var(--ink);
+  transform:translateY(-2px);
+}
+.ref:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ref .label{margin:0 0 4px}
+.ref .title em{
+  font-style:normal;
+  background:linear-gradient(to top,var(--canola) 30%,transparent 30%);
+  padding:0 .1em;
+}
+.ref .desc{margin:5px 0 0}
+.ref .url{
+  font-family:var(--num);
+  font-size:12px;
+  color:var(--moss);
+  margin:9px 0 0;
+  word-break:break-all;
+}
+.ref .arrow{align-self:center}
+.refs{display:grid;gap:10px}
+.ref:hover .arrow,.ref:focus-visible .arrow{
+  transform:translateX(4px);
+  color:var(--ink);
+}
+
+@media (max-width:520px){
+  .wrap{padding:44px 18px 72px}
+  .card{grid-template-columns:58px 1fr 20px;padding:18px 8px}
+  .no{font-size:32px}
+  .title{font-size:17px}
+  .ref{grid-template-columns:1fr 20px;padding:18px 8px 18px 12px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Claude &nbsp;·&nbsp; 2 sessions &nbsp;·&nbsp; Free plan</p>
+    <h1>내 수업은 내가 만든다<br><em>강의안 · PPT · 웹교안 · 나만의 스킬</em></h1>
+    <p class="lead">사회복지사를 위한 AI 교안 제작 특강. 무료 클로드로 모든 실습을 진행하고, 챗GPT로 따라 하는 방법도 함께 담았습니다. 차시를 선택하면 해당 수업 페이지로 이동합니다.<br>한국재활데이케어센터 의뢰 · 차시당 120분</p>
+    <p class="by">만든 사람 —
+      <a href="https://loveria3.github.io/profile/" target="_blank" rel="noopener">강사 강지애</a><span class="go"> ↗</span>
+    </p>
+  </header>
+
+  <ul class="rail">
+    <li>
+      <a class="card" href="1.html">
+        <span class="no">01</span>
+        <span>
+          <span class="label">1차시 · 120분</span>
+          <p class="title">설계도를 그리다 — 강의안과 PPT 교안</p>
+          <p class="desc">대상 카드로 커리큘럼 · 1회기 강의안 · PPT 파일 직접 만들기 · 보호자 안내문(기본 스킬) · 카카오톡 커넥터(MCP)로 요약 받기</p>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="2.html">
+        <span class="no">02</span>
+        <span>
+          <span class="label">2차시 · 120분</span>
+          <p class="title">한 번 만들어 계속 쓴다 — 웹교안과 나만의 스킬</p>
+          <p class="desc">휴대폰 웹교안 · 🔊 읽어 주기 · ⭐ 도장 · 반응형 · 버셀 올리기 · QR · easy-lesson 스킬 · 한 줄로 새 교안</p>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li class="home">
+      <a class="card" href="gpt.html">
+        <span class="no">GPT</span>
+        <span>
+          <span class="label">수업 뒤 혼자 해 보기<span class="tag">따라 보기</span></span>
+          <p class="title">🟢 챗GPT로 따라 하기</p>
+          <p class="desc">같은 프롬프트로 챗GPT에서 — 되는 것 · 대신하는 방법 · 안 되는 것을 실습별로</p>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+  </ul>
+
+  <section class="extra">
+    <div class="extra-head">
+      <span class="k">Materials</span>
+      <h2>수업에 쓰는 자료 · 완성본</h2>
+    </div>
+    <div class="refs">
+    <a class="ref" href="sample-store.html">
+      <span>
+        <span class="label">2차시 완성 예시</span>
+        <p class="title"><em>편의점에서 물건 사기 — 이용인용 웹교안</em></p>
+        <p class="desc">휴대폰으로 보는 카드 · 읽어 주기 · 다 했어요 도장 · OX 퀴즈 — 이런 걸 만듭니다</p>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="ref" href="files/store-lesson1.pptx" download="편의점_1회기_비상용.pptx">
+      <span>
+        <span class="label">1차시 비상용 · 2차시 QR 넣기</span>
+        <p class="title"><em>편의점 1회기 PPT (10장)</em></p>
+        <p class="desc">큰 글씨 · 아이콘 · 슬라이드 노트에 강사가 할 말 · 마지막 장에 QR 넣을 자리</p>
+      </span>
+      <span class="arrow" aria-hidden="true">↓</span>
+    </a>
+    <a class="ref" href="files/target-card.txt" download="대상카드.txt">
+      <span>
+        <span class="label">1차시 실습 자료</span>
+        <p class="title"><em>대상 카드 (TXT)</em></p>
+        <p class="desc">누구에게 · 무엇을 · 몇 회 · 참여자 특징 — 내 수업에 맞게 고쳐 쓰는 빈칸 카드</p>
+      </span>
+      <span class="arrow" aria-hidden="true">↓</span>
+    </a>
+    <a class="ref" href="files/easy-guide.txt" download="쉬운교안지침.txt">
+      <span>
+        <span class="label">1·2차시 실습 자료</span>
+        <p class="title"><em>쉬운 교안 지침 (TXT)</em></p>
+        <p class="desc">한 문장 한 가지 · 큰 글씨 · 그림과 함께 · 개인정보 금지 — 매번 같이 올리는 규칙 파일</p>
+      </span>
+      <span class="arrow" aria-hidden="true">↓</span>
+    </a>
+    <a class="ref" href="files/easy-lesson.zip" download>
+      <span>
+        <span class="label">2차시 비상용</span>
+        <p class="title"><em>easy-lesson 스킬 (ZIP)</em></p>
+        <p class="desc">스킬 zip이 안 만들어질 때 받아서 그대로 업로드</p>
+      </span>
+      <span class="arrow" aria-hidden="true">↓</span>
+    </a>
+    <a class="ref" href="vercel-help.html">
+      <span>
+        <span class="label">2차시 · 3번</span>
+        <p class="title"><em>버셀로 내 주소 받기 — 화면으로 따라 하기</em></p>
+        <p class="desc">가입 · 끌어다 놓기 · 주소 확인 · 고쳐 다시 올리기</p>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>AI 교안 제작 특강 · 만든 사람
+      <a href="https://loveria3.github.io/profile/" target="_blank" rel="noopener"><b>강사 강지애</b></a></span>
+    <span>2026년 11월 기준 · AI 메뉴 이름은 바뀔 수 있어요</span>
+  </footer>
+
+</main>
+</body>
+</html>
