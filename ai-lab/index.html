@@ -27,6 +27,7 @@
   --sea:#1C3B4B; --sand:#3B331C; color-scheme:dark}
 
 *{box-sizing:border-box}
+html,body{overflow-x:clip}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:24px 24px}
@@ -66,18 +67,21 @@ main{padding-block:28px 64px}
 .facts b{color:var(--ink)}
 
 /* curriculum map */
-.cur{display:grid;gap:12px;counter-reset:s}
-.cur a{display:grid;grid-template-columns:64px 1fr 1fr 150px;gap:16px;align-items:center;text-decoration:none;color:var(--ink);
-  background:var(--panel);border:1px solid var(--line);border-left:8px solid var(--cc);border-radius:14px;padding:16px 18px;transition:transform .15s}
-.cur a:hover{transform:translateX(4px)}
-.cur .num{font-family:var(--display);font-size:2.4rem;color:var(--cc);line-height:1}
-.cur .num small{display:block;font-size:.8rem;color:var(--muted);font-family:var(--body)}
-.cur .ttl{font-family:var(--display);font-size:1.3rem}
-.cur .per{display:grid;gap:4px;font-size:.92rem}
-.cur .per span{display:flex;gap:8px;align-items:baseline}
-.cur .per i{font-style:normal;font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--tc);color:var(--cc);white-space:nowrap}
-.cur .prn{font-size:.85rem;color:var(--muted);text-align:right}
-.cur .prn b{display:block;color:var(--cc);font-size:.9rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.88rem}
+.flow span{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--tc);color:var(--cc);font-weight:700}
+.flow i{font-style:normal;color:var(--muted)}
+.cur{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.cur a{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .15s,box-shadow .15s;min-width:0}
+.cur a:hover{transform:translateY(-3px);box-shadow:0 6px 0 var(--line)}
+.cur .chead{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--tc)}
+.cur .num{font-family:var(--display);font-size:2.2rem;line-height:1;color:var(--cc);min-width:1.4em;text-align:center}
+.cur .ttl{font-family:var(--display);font-size:1.25rem;line-height:1.2}
+.cur .area{margin-left:auto;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--panel);color:var(--cc);white-space:nowrap}
+.cur dl{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;margin:0;padding:14px 16px 16px;font-size:.95rem;align-items:baseline}
+.cur dt{font-size:.74rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.cur dd{margin:0;min-width:0}
+.cur dd.learn{color:var(--cc);font-weight:700}
+.cur .go{margin-top:auto;padding:0 16px 14px;font-size:.82rem;color:var(--muted)}
 @media (max-width:900px){.cur a{grid-template-columns:56px 1fr 1fr}.cur .prn{grid-column:2/-1;text-align:left}}
 @media (max-width:640px){.cur a{grid-template-columns:52px 1fr}.cur .per,.cur .prn{grid-column:1/-1;text-align:left}}
 
@@ -103,8 +107,8 @@ main{padding-block:28px 64px}
 .tablet b{color:var(--cc)}
 
 /* slides strip */
-.slides{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
-.slide{flex:0 0 150px;aspect-ratio:16/10;max-width:100%;background:var(--panel);border:1.5px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:.78rem;line-height:1.35}
+.slides{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:10px}
+.slide{min-height:96px;min-width:0;background:var(--panel);border:1.5px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:.78rem;line-height:1.35}
 .slide .sn{font-family:var(--display);color:var(--cc);font-size:.9rem}
 .slide b{font-size:.84rem}
 
@@ -117,7 +121,8 @@ main{padding-block:28px 64px}
 .spec dd{margin:0}
 .stars{color:var(--cc);letter-spacing:2px}
 .howto{margin:8px 0 0;padding-left:20px;font-size:.92rem}
-.fig{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto}
+.fig{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0;overflow:hidden}
+.fig svg{max-width:100%;height:auto}
 .fig figcaption{font-size:.82rem;color:var(--muted);margin-top:8px}
 figure{margin:0}
 svg text{font-family:var(--body)}
@@ -138,30 +143,31 @@ svg text{font-family:var(--body)}
 .pc .e{font-size:2rem;line-height:1.2;display:block}
 
 /* pixel */
-.px{display:grid;grid-template-columns:repeat(8,26px);gap:0;border:2px solid var(--ink);width:max-content}
-.px div{width:26px;height:26px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-variant-numeric:tabular-nums;background:var(--panel)}
+.px{display:grid;grid-template-columns:repeat(8,minmax(0,26px));gap:0;border:2px solid var(--ink);width:max-content;max-width:100%}
+.px div{aspect-ratio:1;min-width:0;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-variant-numeric:tabular-nums;background:var(--panel)}
 .pxrow{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.85rem}
 .legend span{display:flex;align-items:center;gap:5px}
 .legend i{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
 
 /* board */
-.board{display:grid;grid-template-columns:repeat(6,58px);border:3px solid var(--ink);border-radius:8px;overflow:hidden;width:max-content;background:var(--sea)}
-.board div{width:58px;height:58px;border:1px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:.62rem;line-height:1.1;background:var(--sand);color:var(--ink);text-align:center}
+.board{display:grid;grid-template-columns:repeat(6,minmax(0,58px));border:3px solid var(--ink);border-radius:8px;overflow:hidden;width:100%;max-width:354px;background:var(--sea)}
+.board div{aspect-ratio:1;min-width:0;overflow:hidden;border:1px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:.62rem;line-height:1.1;background:var(--sand);color:var(--ink);text-align:center}
 .board div .e{font-size:1.4rem}
 .board div.W{background:var(--sea)}
 
 /* mock sheets */
 .sheet{background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:14px;box-shadow:0 2px 0 var(--line)}
-.passport{display:grid;grid-template-columns:1fr 1fr;width:min(100%,520px);aspect-ratio:1.414/1;background:var(--panel);border:2px solid var(--ink);border-radius:8px;overflow:hidden}
-.passport>div{padding:12px;display:flex;flex-direction:column;gap:8px}
-.passport>div+div{border-left:2px dashed var(--line)}
-.stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1}
-.stamps span{border:2px dashed var(--line);border-radius:50%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.68rem;text-align:center;color:var(--muted);line-height:1.2}
+.passport{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));width:100%;max-width:520px;background:var(--panel);border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.passport>div{padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.passport>div+div{border-left:2px dashed var(--line);border-top:2px dashed var(--line);margin:-2px 0 0 -2px}
+.stamps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stamps span{border:2px dashed var(--line);border-radius:50%;aspect-ratio:1;width:100%;max-width:76px;justify-self:center;padding:4px;overflow:hidden;word-break:keep-all;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.68rem;text-align:center;color:var(--muted);line-height:1.2}
 
 /* tables */
-.tbl{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:560px}
+.tbl{min-width:0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;word-break:keep-all;overflow-wrap:anywhere}
+@media (max-width:560px){th,td{padding:7px 6px;font-size:.84rem}}
 th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
 th{font-size:.82rem;color:var(--muted);letter-spacing:.03em}
 td.n{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
@@ -198,6 +204,9 @@ tfoot td{font-weight:700;border-bottom:0}
 .bugrow i{font-style:normal;color:var(--muted)}
 .bugcard{width:130px;border:2px solid var(--c6);background:var(--t6);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:2px;font-size:.78rem}
 .bugcard b{font-family:var(--display);font-weight:400;color:var(--c6);font-size:1.1rem}
+a.ext{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+a.ext::after{content:" 열기 ↗";font-size:.75em;font-weight:700;text-decoration:none;display:inline-block;margin-left:4px;padding:1px 6px;border-radius:6px;background:var(--t2);color:var(--accent)}
+a.ext:hover{background:var(--t2)}
 .story{background:var(--tc);border-radius:12px;padding:12px 16px;max-width:70ch;font-size:.98rem}
 .story b{font-family:var(--display);font-weight:400;color:var(--cc);margin-right:6px}
 .extra h3{font-size:1.1rem}
@@ -344,6 +353,8 @@ const EXTRA = {
     planb:"Animated Drawings 대신 '그림 인형극': 로봇 그림을 오려 나무젓가락에 붙이고 움직이며 소개해요",
     check:"AI와 함께 지낼 때 지킬 약속 한 가지는 무엇인가요?"}
 };
+const BRIEF={1:["AI","샌드위치 로봇 · 사람 로봇","Quick, Draw!","순서대로 명령해요"],2:["AI","카드 분류 · 몸 스무고개","AI for Oceans","AI는 예시로 배워요"],3:["과학","실전화 · 고무줄 기타","Chrome Music Lab","소리는 떨림이에요"],4:["과학","색안경 · 숫자 픽셀 그림","AutoDraw","그림은 점과 숫자예요"],5:["코딩","블록 코딩 보드게임 · 버그 찾기","Code.org 미로","반복하고 고쳐요"],6:["AI","OX 몸놀이 · 로봇 발명","Animated Drawings","AI와 함께 지킬 약속"]};
+S.forEach(s=>{const b=BRIEF[s.id];s.area=b[0];s.play=b[1];s.tool=b[2];s.learn=b[3]});
 S.forEach(s=>{Object.assign(s,EXTRA[s.id]);s.slides.splice(1,0,["로보 이야기",s.story.split(".")[0]+"…"])});
 S[0].mats.splice(1,0,"로보 인형 (집에 있는 인형에 종이 로봇 머리띠, 6차시까지 마스코트)","모둠 역할 카드 4장 × 4모둠");
 S[0].makes.push("roles");
@@ -389,7 +400,7 @@ function blk(k,showN){const b=BLK[k];
 const MAKE = {
  passport:{name:"AI 탐험가 여권", use:"1~6차시", size:"A4 가로 1장을 반으로 접기 (A5 4면)", qty:"학생 수 + 여유 3장", level:1,
   how:["한글에서 A4 가로 문서를 2단으로 나누기","오른쪽 면(앞표지): 제목, 이름 칸, 얼굴 그리기 칸","안쪽 면: 도장 동그라미 6개와 차시 이름","흑백 출력하고 학생이 표지를 색칠해요"],
-  fig:()=>`<div class="passport"><div><b style="font-family:var(--display)">탐험 도장</b><div class="stamps">${S.map(s=>`<span>${s.id}<br>${s.title.length>8?s.title.slice(0,7)+"…":s.title}</span>`).join("")}</div></div><div style="align-items:center;justify-content:center;text-align:center"><span class="eyebrow">놀며 배우는 AI 탐구 실험실</span><b style="font-family:var(--display);font-size:1.3rem">AI 탐험가 여권</b><div style="width:70px;height:80px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted)">내 얼굴<br>그리기</div><span class="small">이름: ________</span></div></div><figcaption>왼쪽 = 안쪽 도장 면, 오른쪽 = 앞표지.</figcaption>`},
+  fig:()=>`<div class="passport"><div><b style="font-family:var(--display)">탐험 도장</b><div class="stamps">${S.map(s=>`<span><b style="font-size:.9rem;color:var(--ink)">${s.id}</b>${["말하기","알아보기","소리","빛과 색","보물섬","발명"][s.id-1]}</span>`).join("")}</div></div><div style="align-items:center;justify-content:center;text-align:center"><span class="eyebrow">놀며 배우는 AI 탐구 실험실</span><b style="font-family:var(--display);font-size:1.3rem">AI 탐험가 여권</b><div style="width:70px;height:80px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted)">내 얼굴<br>그리기</div><span class="small">이름: ________</span></div></div><figcaption>왼쪽 = 안쪽 도장 면, 오른쪽 = 앞표지.</figcaption>`},
  seq:{name:"종이 샌드위치 + 순서 카드", use:"1차시 (5차시 버그 카드로 재사용)", size:"순서 카드: A4 한 장에 6장 (긴 띠 모양 18×4cm)", qty:"순서 카드 6장 × 4모둠 (A4 4장), 종이 샌드위치 1세트", level:1,
   how:["종이 샌드위치: 색지로 빵 2장(갈색), 햄(분홍), 치즈(노랑), 상추(초록), 토마토(빨강)를 오려 두기. 음식을 쓰지 않아 알레르기 걱정이 없어요","순서 카드: 한글 표 1열×6행, 칸마다 단계 글 + 작은 그림. 카드마다 띠 색을 다르게 하면 1~2학년도 구별하기 쉬워요","코팅하면 5차시 '버그 발견!' 게임에도 다시 써요"],
   fig:()=>`<div class="seq">${["빵 한 장을 접시에 놓아요","빵 위에 상추를 올려요","치즈를 올려요","햄을 올려요","토마토를 올려요","빵을 덮으면 완성!"].map((t,i)=>`<div style="--sc:var(--c${[1,2,3,4,5,6][i]})"><b>${i+1}</b>${t}</div>`).join("")}</div><figcaption>사진 속 수업처럼 색 띠 카드를 섞어 두고, 순서대로 놓은 모둠이 손을 들어요.</figcaption>`},
@@ -545,13 +556,13 @@ function pieceSVG(){
   <text x="150" y="78">(돌기 블록을 쓸 때 이 방향을 돌려요)</text></g></svg>`}
 
 /* ---------- views ---------- */
+function link(u){const href="https://"+u.split(" ")[0];return `<a class="ext" href="${href}" target="_blank" rel="noopener noreferrer">${u}</a>`}
 const views = {};
 function sessionLink(s){
   return `<a href="#s${s.id}" style="--cc:var(--c${s.color});--tc:var(--t${s.color})">
-   <div class="num">${s.id}<small>차시</small></div>
-   <div><div class="ttl">${s.title}</div><div class="muted small">${s.sub}</div></div>
-   <div class="per"><span><i>1교시</i>${s.p1.name}</span><span><i>2교시</i>${s.p2.name}</span></div>
-   <div class="prn"><b>배우는 원리</b>${s.principle}</div></a>`}
+   <div class="chead"><span class="num">${s.id}</span><span class="ttl">${s.title}</span><span class="area">${s.area}</span></div>
+   <dl><dt>놀이</dt><dd>${s.play}</dd><dt>태블릿</dt><dd>${s.tool}</dd><dt>배움</dt><dd class="learn">${s.learn}</dd></dl>
+   <span class="go">수업 자세히 보기 →</span></a>`}
 
 const PHOTO_LEARN=[
  ["퍼즐 블록 카드와 책상 위 격자판","'시작하기 → 앞으로 1칸 → 3번 반복하기 → 도착! 말하기'를 퍼즐처럼 이어 붙이는 카드가 아이들 손에 가장 잘 맞았어요.","1·5차시 블록 카드, 5차시 격자판"],
@@ -572,7 +583,8 @@ views.home = ()=>`
  </section>
  <section class="view" style="gap:12px">
   <h2>커리큘럼</h2>
-  <p class="muted small">차시를 누르면 수업 흐름, 발표자료 구성, 만들어야 할 것을 그림으로 볼 수 있어요.</p>
+  <p class="muted small">매 차시 <b>놀이</b>로 먼저 익히고 <b>태블릿</b>으로 다시 확인해요. 카드를 누르면 수업 흐름과 만들 것이 나와요.</p>
+  <div class="flow">${S.map(s=>`<span style="--cc:var(--c${s.color});--tc:var(--t${s.color})">${s.id} ${s.learn}</span>`).join("<i>→</i>")}</div>
   <div class="cur">${S.map(sessionLink).join("")}</div>
  </section>
  <section class="panel" style="--cc:var(--accent)">
@@ -625,7 +637,7 @@ S.forEach(s=>{
     <p class="lead">${s.goal}</p><div class="goal"><span class="chip">배우는 원리 · ${s.principle}</span></div>
     <div class="story"><b>오늘의 로보 이야기</b> ${s.story}</div></header>
    <section class="grid2">
-    ${[s.p1,s.p2].map((p,i)=>`<div class="panel period"><header><span class="tag">${i+1}교시</span><span class="chip">${p.kind}</span></header><h3>${p.name}</h3>${p.url?`<p class="small">주소: <b>${p.url}</b> · 로그인 없음</p>`:""}${stepList(p)}${p.tip?`<div class="tablet"><b>태블릿 팁</b> ${p.tip}</div>`:""}</div>`).join("")}
+    ${[s.p1,s.p2].map((p,i)=>`<div class="panel period"><header><span class="tag">${i+1}교시</span><span class="chip">${p.kind}</span></header><h3>${p.name}</h3>${p.url?`<p class="small">주소: ${link(p.url)} · 로그인 없음</p>`:""}${stepList(p)}${p.tip?`<div class="tablet"><b>태블릿 팁</b> ${p.tip}</div>`:""}</div>`).join("")}
    </section>
    <section class="grid3 extra">
     <div class="panel"><h3>수준별 지도</h3><p class="small" style="margin-top:8px"><b>도움이 필요할 때</b><br>${s.help}</p><p class="small" style="margin-top:8px"><b>빨리 끝났을 때</b><br>${s.hard}</p></div>
@@ -648,7 +660,7 @@ views.prep = ()=>`<div class="view" style="--cc:var(--accent);--tc:var(--t2)">
  <header class="shead"><span class="n">수업 전 준비</span><h1>준비 · 예산</h1><p class="lead">모든 웹 프로그램은 태블릿 브라우저에서 바로 열리고 로그인이 없어요. 카메라는 6차시 교사 태블릿에서만 써요.</p></header>
  <section class="panel"><h2>쓰는 웹 프로그램</h2><div class="tbl" style="margin-top:12px"><table>
   <thead><tr><th>프로그램</th><th>주소</th><th>차시</th><th>누가 쓰나요</th><th>태블릿 권한</th></tr></thead><tbody>
-  ${WEB.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}
+  ${WEB.map(r=>`<tr>${r.map((c,i)=>`<td>${i===1?link(c):c}</td>`).join("")}</tr>`).join("")}
   </tbody></table></div>
   <p class="note" style="margin-top:12px">Teachable Machine은 웹캠이 있는 컴퓨터가 필요해서 뺐어요.</p></section>
  <section class="grid2">
