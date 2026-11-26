@@ -1,0 +1,690 @@
+<title>놀며 배우는 AI 탐구 실험실</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 모눈 실험노트 위에 커리큘럼 지도(첫 화면) → 차시별 상세 페이지(해시 라우팅). 차시마다 크레파스 색 하나. */
+:root{
+  --paper:#F3F6FA; --panel:#FFFFFF; --ink:#1E2940; --muted:#5A6680; --line:#D6DFEA; --grid:#E4EBF3;
+  --accent:#2F6FEB;
+  --c1:#2E9E5B; --c2:#2F6FEB; --c3:#EE7F1B; --c4:#D9A400; --c5:#8B5CF6; --c6:#E0453A;
+  --t1:#E3F4EA; --t2:#E4EDFD; --t3:#FDEEDF; --t4:#FBF2D2; --t5:#EFE9FE; --t6:#FCE6E4;
+  --sea:#BFE3F2; --sand:#F6E7BF;
+  --display:"Jua","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111827; --panel:#1A2336; --ink:#E8EDF6; --muted:#9BA7BF; --line:#2D3953; --grid:#18213A;
+  --accent:#7AA2FF;
+  --c1:#4CC27F; --c2:#6E9BFF; --c3:#FF9E4A; --c4:#F2C230; --c5:#A98BFF; --c6:#FF6B5E;
+  --t1:#16301F; --t2:#18264A; --t3:#3A2614; --t4:#352C0C; --t5:#271F45; --t6:#3A1A18;
+  --sea:#1C3B4B; --sand:#3B331C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111827; --panel:#1A2336; --ink:#E8EDF6; --muted:#9BA7BF; --line:#2D3953; --grid:#18213A;
+  --accent:#7AA2FF;
+  --c1:#4CC27F; --c2:#6E9BFF; --c3:#FF9E4A; --c4:#F2C230; --c5:#A98BFF; --c6:#FF6B5E;
+  --t1:#16301F; --t2:#18264A; --t3:#3A2614; --t4:#352C0C; --t5:#271F45; --t6:#3A1A18;
+  --sea:#1C3B4B; --sand:#3B331C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem)}
+h2{font-size:1.6rem}
+h3{font-size:1.25rem}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top nav */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-size:1.15rem;color:var(--ink);text-decoration:none;margin-right:auto}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav a{font-family:var(--display);text-decoration:none;color:var(--ink);padding:4px 12px;border-radius:999px;border:1.5px solid var(--line);font-size:.95rem}
+.nav a[aria-current="page"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.nav a:focus-visible,.cur a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+main{padding-block:28px 64px}
+.view{display:grid;gap:28px}
+.eyebrow{font-size:.8rem;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.lead{font-size:1.08rem;color:var(--muted);max-width:68ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid2>*,.grid3>*{min-width:0}
+.chip{display:inline-block;font-size:.82rem;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--tc);color:var(--cc)}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* home hero */
+.hero{display:grid;gap:14px;padding-block:8px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.95rem}
+.facts b{color:var(--ink)}
+
+/* curriculum map */
+.cur{display:grid;gap:12px;counter-reset:s}
+.cur a{display:grid;grid-template-columns:64px 1fr 1fr 150px;gap:16px;align-items:center;text-decoration:none;color:var(--ink);
+  background:var(--panel);border:1px solid var(--line);border-left:8px solid var(--cc);border-radius:14px;padding:16px 18px;transition:transform .15s}
+.cur a:hover{transform:translateX(4px)}
+.cur .num{font-family:var(--display);font-size:2.4rem;color:var(--cc);line-height:1}
+.cur .num small{display:block;font-size:.8rem;color:var(--muted);font-family:var(--body)}
+.cur .ttl{font-family:var(--display);font-size:1.3rem}
+.cur .per{display:grid;gap:4px;font-size:.92rem}
+.cur .per span{display:flex;gap:8px;align-items:baseline}
+.cur .per i{font-style:normal;font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--tc);color:var(--cc);white-space:nowrap}
+.cur .prn{font-size:.85rem;color:var(--muted);text-align:right}
+.cur .prn b{display:block;color:var(--cc);font-size:.9rem}
+@media (max-width:900px){.cur a{grid-template-columns:56px 1fr 1fr}.cur .prn{grid-column:2/-1;text-align:left}}
+@media (max-width:640px){.cur a{grid-template-columns:52px 1fr}.cur .per,.cur .prn{grid-column:1/-1;text-align:left}}
+
+/* session page */
+.shead{display:grid;gap:10px;border-left:8px solid var(--cc);padding-left:18px}
+.shead .n{font-family:var(--display);color:var(--cc);font-size:1.1rem}
+.goal{display:flex;gap:10px;flex-wrap:wrap}
+.period{display:grid;gap:14px}
+.period header{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.period header .tag{font-family:var(--display);background:var(--cc);color:var(--panel);padding:2px 12px;border-radius:8px}
+.steps{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.steps>li{display:grid;grid-template-columns:58px minmax(0,1fr) 46px;gap:12px;align-items:start;padding:10px 0;border-top:1px dashed var(--line)}
+.steps>li:first-child{border-top:0}
+.steps ul li{display:list-item;padding:2px 0;border:0}
+.steps .st{font-weight:700;font-size:.85rem;color:var(--cc);padding-top:2px}
+.steps .tm{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem;text-align:right;padding-top:2px}
+.steps ul{margin:4px 0 0;padding-left:18px}
+.timebar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--line)}
+.timebar span{background:var(--cc)}
+.timebar span:nth-child(2){opacity:.6}
+.timebar span:nth-child(3){opacity:.3}
+.tablet{background:var(--tc);border-radius:10px;padding:12px 14px;font-size:.92rem}
+.tablet b{color:var(--cc)}
+
+/* slides strip */
+.slides{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
+.slide{flex:0 0 150px;aspect-ratio:16/10;max-width:100%;background:var(--panel);border:1.5px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:.78rem;line-height:1.35}
+.slide .sn{font-family:var(--display);color:var(--cc);font-size:.9rem}
+.slide b{font-size:.84rem}
+
+/* make items */
+.make{display:grid;gap:14px}
+.mk{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.mk{grid-template-columns:1fr}}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.92rem;margin:0}
+.spec dt{color:var(--muted);font-weight:700}
+.spec dd{margin:0}
+.stars{color:var(--cc);letter-spacing:2px}
+.howto{margin:8px 0 0;padding-left:20px;font-size:.92rem}
+.fig{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto}
+.fig figcaption{font-size:.82rem;color:var(--muted);margin-top:8px}
+figure{margin:0}
+svg text{font-family:var(--body)}
+.ink{fill:var(--ink)} .mutedf{fill:var(--muted)} .panelf{fill:var(--panel)} .linef{stroke:var(--line)}
+
+/* command cards */
+.cards{display:flex;flex-wrap:wrap;gap:10px}
+.ccard{width:118px;height:76px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;flex-direction:column;color:#fff;font-weight:700;font-size:.85rem;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.ccard svg{width:34px;height:34px}
+.ccard.back{background:var(--panel);color:var(--ink);border:2px dashed var(--line);box-shadow:none}
+.ccard .cnt{font-size:.7rem;font-weight:500;opacity:.9}
+.bug{width:150px;min-height:92px;border-radius:9px;border:2px solid var(--c6);background:var(--t6);padding:8px 10px;font-size:.85rem;display:flex;flex-direction:column;gap:4px}
+.bug b{font-family:var(--display);color:var(--c6);font-weight:400}
+
+/* picture cards */
+.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.pc{background:var(--panel);border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:6px 2px;font-size:.8rem}
+.pc .e{font-size:2rem;line-height:1.2;display:block}
+
+/* pixel */
+.px{display:grid;grid-template-columns:repeat(8,26px);gap:0;border:2px solid var(--ink);width:max-content}
+.px div{width:26px;height:26px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-variant-numeric:tabular-nums;background:var(--panel)}
+.pxrow{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.85rem}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+
+/* board */
+.board{display:grid;grid-template-columns:repeat(6,58px);border:3px solid var(--ink);border-radius:8px;overflow:hidden;width:max-content;background:var(--sea)}
+.board div{width:58px;height:58px;border:1px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:.62rem;line-height:1.1;background:var(--sand);color:var(--ink);text-align:center}
+.board div .e{font-size:1.4rem}
+.board div.W{background:var(--sea)}
+
+/* mock sheets */
+.sheet{background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:14px;box-shadow:0 2px 0 var(--line)}
+.passport{display:grid;grid-template-columns:1fr 1fr;width:min(100%,520px);aspect-ratio:1.414/1;background:var(--panel);border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.passport>div{padding:12px;display:flex;flex-direction:column;gap:8px}
+.passport>div+div{border-left:2px dashed var(--line)}
+.stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1}
+.stamps span{border:2px dashed var(--line);border-radius:50%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.68rem;text-align:center;color:var(--muted);line-height:1.2}
+
+/* tables */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:560px}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{font-size:.82rem;color:var(--muted);letter-spacing:.03em}
+td.n{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+tfoot td{font-weight:700;border-bottom:0}
+.check{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.check li{display:flex;gap:8px}
+.check li::before{content:"";flex:0 0 16px;height:16px;border:2px solid var(--cc,var(--accent));border-radius:4px;margin-top:4px}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pager a{font-family:var(--display);text-decoration:none;border:1.5px solid var(--line);background:var(--panel);padding:8px 16px;border-radius:10px;color:var(--ink)}
+.note{font-size:.88rem;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+
+/* blocks, sequences, signs, bins */
+.blks{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-start}
+.blkwrap{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.blkwrap svg{max-width:100%;height:auto}
+.blkwrap .cnt{font-size:.75rem;color:var(--muted)}
+.seq{display:grid;gap:6px;max-width:360px}
+.seq div{display:flex;gap:10px;align-items:center;background:var(--panel);border:1.5px solid var(--line);border-left:10px solid var(--sc);border-radius:6px;padding:6px 10px;font-size:.9rem}
+.seq b{font-family:var(--display);color:var(--sc);font-weight:400}
+.sign{width:130px;aspect-ratio:1/1.414;background:var(--panel);border:3px solid var(--sc);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display);font-size:1.3rem;color:var(--sc)}
+.sign span{font-size:3.4rem;line-height:1}
+.bins3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:8px}
+.bins3>div{border-radius:10px;padding:10px;display:grid;gap:8px;align-content:start;min-width:0}
+.bins3 b{font-family:var(--display);font-size:1.2rem;font-weight:400}
+.bins4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:8px}
+.bins4>div{border:2px solid var(--sc);border-top:14px solid var(--sc);border-radius:6px 6px 14px 14px;background:var(--panel);padding:8px;display:grid;gap:4px;font-size:.82rem}
+.bins4 b{font-family:var(--display);font-weight:400;font-size:1rem}
+.bins4 span{background:var(--paper);border-radius:4px;padding:2px 6px}
+.bugs{display:grid;gap:10px}
+.bugrow b{font-size:.85rem}
+.bugrow>div{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:4px}
+.bugrow span{background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:4px 8px;font-size:.8rem}
+.bugrow span.wrong{border-color:var(--c6);border-width:2.5px}
+.bugrow i{font-style:normal;color:var(--muted)}
+.bugcard{width:130px;border:2px solid var(--c6);background:var(--t6);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:2px;font-size:.78rem}
+.bugcard b{font-family:var(--display);font-weight:400;color:var(--c6);font-size:1.1rem}
+.story{background:var(--tc);border-radius:12px;padding:12px 16px;max-width:70ch;font-size:.98rem}
+.story b{font-family:var(--display);font-weight:400;color:var(--cc);margin-right:6px}
+.extra h3{font-size:1.1rem}
+.learn{display:grid;gap:6px;align-content:start;border-top:3px solid var(--line);padding-top:10px}
+.board div.R{background:var(--line)}
+@media (prefers-reduced-motion:reduce){.cur a{transition:none}}
+</style>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#home">놀며 배우는 AI 탐구 실험실</a>
+  <nav class="nav" id="nav"></nav>
+</div></div>
+<main class="wrap" id="app"></main>
+
+<script>
+const S = [
+ {id:1, color:1, title:"로봇에게 말하는 법", sub:"샌드위치 로봇과 보물 찾기",
+  goal:"컴퓨터와 로봇은 정해 준 순서(알고리즘)대로만 움직인다는 것을 놀이로 알고, AI가 내 그림을 알아보는 모습을 태블릿으로 체험한다.",
+  principle:"순서(알고리즘) · 패턴 알아보기",
+  p1:{kind:"언플러그드", name:"샌드위치 로봇 + 순서 카드 퀴즈", steps:[
+    ["도입",7,"「AI 탐험가 여권」 받고 이름 쓰기",["발표자료 사진 퀴즈: 우리 주변 AI 찾기 (AI 스피커, 로봇청소기 등 6장 + AI가 아닌 선풍기·손전등 2장)"]],
+    ["전개",28,"선생님은 샌드위치 로봇!",["교사가 로봇이 되어 학생들이 말하는 대로만 종이 샌드위치를 만들어요. \"빵을 놓아요\"라고 하면 빵을 바닥에 놓는 식으로 말 그대로 움직여서 웃음이 터져요","\"어떻게 말해야 로봇이 알아들을까?\" → 한 단계씩, 정확한 순서로 말하기","모둠 순서 카드 퀴즈: 색 띠 카드 6장(샌드위치 만들기 단계)을 섞어 두고, 순서대로 놓은 모둠이 손 들기"]],
+    ["정리",5,"순서가 바뀌면 어떻게 될까?",["카드 두 장을 바꿔 놓고 로봇 선생님이 그대로 해 보기","여권에 1번 도장"]]]},
+  p2:{kind:"언플러그드 + 태블릿", name:"사람 로봇 보물 찾기 → Quick, Draw!", url:"quickdraw.withgoogle.com", steps:[
+    ["사람 로봇",15,"블록 카드로 친구 로봇 움직이기",["교실 뒤 빈 공간, 의자 위 인형이 보물. 명령자가 블록 카드(앞으로 1칸=한 걸음, 오른쪽으로 90° 돌기 등)를 한 장씩 읽으면 로봇 친구가 그대로 움직여요","'시작하기'로 출발, 보물에 닿으면 '도착!' 외치기. 모둠마다 한 판씩"]],
+    ["태블릿",20,"Quick, Draw! — AI야, 내 그림 맞혀 봐",["교사 시연 후 모둠 태블릿으로 돌아가며 그리기 (한 판 6문제)","AI가 맞힌 그림 수만큼 모둠 점수판에 스티커","끝난 화면에서 다른 사람들의 같은 그림 보기 → \"AI는 이런 그림을 아주 많이 보고 배웠어요\""]],
+    ["정리",5,"AI가 못 맞힌 그림은 왜 그랬을까?",["AI도 배운 것만 알아요. 여권 도장 확인"]]],
+    tip:"태블릿을 책상에 눕혀 놓으면 손가락으로 그리기 쉬워요. 제시어는 한국어로 나와요(브라우저 언어가 한국어일 때). 글을 못 읽는 친구는 모둠 친구가 읽어 줘요."},
+  slides:[["표지","오늘의 탐험: 로봇에게 말하는 법"],["약속 3가지","차례 지키기, 천천히 걷기, 친구 응원하기"],["AI 찾기 퀴즈","사진 8장, AI면 O"],["샌드위치 로봇","선생님 로봇에게 명령해 봐요"],["순서 카드 퀴즈","6장 순서대로 놓기"],["블록 카드 소개","시작하기, 앞으로, 돌기, 도착!"],["사람 로봇 미션","의자 위 보물 위치 그림"],["Quick, Draw!","① 시작 ② 제시어 ③ 그리기"],["오늘 배운 것","순서가 중요해요 + 도장"]],
+  makes:["passport","seq","blocks"],
+  mats:["AI 탐험가 여권","종이 샌드위치 재료 (색지: 빵 2, 햄, 치즈, 상추, 토마토)","샌드위치 순서 카드 6장 × 4모둠","블록 카드 1세트 (5차시와 함께 사용)","의자 + 작은 인형 (보물)","모둠 점수판 + 원형 스티커","교사 태블릿 + TV, 모둠 태블릿 4대"]},
+
+ {id:2, color:2, title:"AI는 어떻게 알아볼까?", sub:"분류 탐정과 바다 청소",
+  goal:"기준을 정해 카드를 나누는 분류 놀이를 하고, 태블릿에서 AI에게 물고기와 쓰레기를 직접 가르쳐 본다.",
+  principle:"분류 · 데이터와 학습",
+  p1:{kind:"언플러그드", name:"땅·물·하늘 분류 + 예/아니오 몸 스무고개", steps:[
+    ["도입",5,"\"AI는 사진을 보고 어떻게 고양이인 줄 알까?\"",["같은 것끼리 모으는 게 분류예요. AI도 분류를 해요"]],
+    ["전개",30,"분류 탐정 놀이",["동물·탈것 카드 20장을 땅·물·하늘 분류판에 나누기 (모둠별)","같은 카드로 다른 기준 찾기: 다리가 있다/없다, 사람이 탄다/안 탄다","예/아니오 몸 스무고개: 교실 바닥에 '예', '아니오' 표지판을 놓고, 교사가 숨긴 카드에 대한 질문(\"하늘을 날아요?\")에 답하는 쪽으로 이동 → 남은 카드가 줄어들어요"]],
+    ["정리",5,"좋은 질문은 카드를 반으로 나눠요",["여권에 2번 도장"]]]},
+  p2:{kind:"언플러그드 + 태블릿", name:"분리배출 놀이판 → AI for Oceans", url:"code.org/oceans", steps:[
+    ["분리배출",10,"쓰레기 카드를 알맞은 통에",["분리배출 놀이판(종이·플라스틱·캔·유리)에 쓰레기 카드 16장을 모둠이 함께 넣기","\"이렇게 나누는 일을 AI에게 가르칠 수 있을까?\""]],
+    ["태블릿",23,"AI for Oceans — AI에게 바다 청소 가르치기",["교사 시연 후 모둠 태블릿: 그림마다 '물고기' / '물고기 아님' 버튼 누르기 (20번 이상)","'계속'을 누르면 AI가 바다를 청소해요. 쓰레기만 잘 골라냈는지 보기","교사 화면에서 일부러 틀리게 가르쳐 보기 → AI가 물고기를 버려요!"]],
+    ["정리",7,"AI는 우리가 보여 준 예시로 배워요",["많이, 바르게 가르치면 더 잘해요. 여권 도장 확인"]]],
+    tip:"로그인 없이 바로 시작돼요. 화면 아래 언어 선택에서 '한국어'를 고르고, 첫 영어 영상은 건너뛰어요. 2단계부터는 글이 많아서 1단계까지만 해요."},
+  slides:[["표지","분류 탐정 출동!"],["분류란?","같은 것끼리 모으기"],["땅·물·하늘","분류판 사용법"],["다른 기준 찾기","다리? 사람이 탈까?"],["몸 스무고개","예 / 아니오로 이동"],["분리배출 놀이판","4개 통"],["AI 선생님 되기","물고기 / 물고기 아님 버튼"],["잘못 가르치면?","AI가 물고기를 버려요"],["오늘 배운 것","예시(데이터)로 배워요 + 도장"]],
+  makes:["sort","yesno","tree","recycle"],
+  mats:["동물·탈것 카드 20장 × 4세트","땅·물·하늘 분류판 4장 (A3)","예/아니오 바닥 표지판 2장","분리배출 놀이판 + 쓰레기 카드 16장 × 4세트","교사 태블릿 + TV, 모둠 태블릿 4대"]},
+
+ {id:3, color:3, title:"소리 탐험대", sub:"떨림을 보는 소리 실험",
+  goal:"소리가 떨림으로 생긴다는 것을 실험으로 알고, 태블릿 마이크로 소리의 모양을 보며 AI가 소리를 구별하는 원리를 짐작해 본다.",
+  principle:"소리는 떨림 · 소리마다 다른 모양",
+  p1:{kind:"과학 실험", name:"종이컵 실전화 + 티슈상자 고무줄 기타", steps:[
+    ["도입",5,"목에 손을 대고 \"아~\" 소리 내기",["떨림이 느껴지나요? 소리를 멈추면 떨림도 멈춰요"]],
+    ["전개",30,"두 가지 소리 장난감 만들기",["실전화: 교사가 미리 구멍 뚫은 종이컵 2개에 실(2m)을 끼우고 이쑤시개 조각으로 고정 → 실을 팽팽하게/느슨하게 해서 비교","고무줄 기타: 빈 티슈상자에 굵기가 다른 고무줄 3개 걸기 → 굵은 줄과 가는 줄 소리 비교"]],
+    ["정리",5,"소리가 잘 들릴 때는 언제였나요?",["실이 팽팽할 때! 떨림이 잘 전해져요","여권에 3번 도장"]]]},
+  p2:{kind:"태블릿 + 몸놀이", name:"Chrome Music Lab — 소리 모양 보기", url:"musiclab.chromeexperiments.com", steps:[
+    ["도입",8,"Spectrogram: 내 목소리가 그림이 돼요",["교사 태블릿으로 \"아~\", 박수, 휘파람, 고무줄 기타 소리를 들려주고 화면 무늬 비교","\"소리마다 모양이 달라요. AI는 이 모양을 보고 소리를 구별해요\""]],
+    ["전개",25,"모둠 태블릿으로 소리 놀이",["Kandinsky: 손가락으로 그림을 그리고 재생하면 그림이 소리가 돼요","Song Maker: 칸을 눌러 모둠 노래(4마디) 만들고, 노래에 맞춰 다 함께 율동"]],
+    ["정리",7,"소리 모양 퀴즈",["교사가 Spectrogram 화면만 보여 주면 무슨 소리인지 맞히기","여권 도장 확인"]]],
+    tip:"Spectrogram은 처음 열 때 '마이크 허용'을 눌러야 해요(로그인은 없어요). 모둠 태블릿은 Kandinsky와 Song Maker만 써도 충분해요."},
+  slides:[["표지","소리 탐험대 출발!"],["목에 손 대 보기","떨림 그림"],["실전화 만드는 법","① 컵 ② 실 ③ 고정"],["고무줄 기타 만드는 법","티슈상자 + 고무줄 3개"],["무엇이 다를까?","팽팽/느슨, 굵은/가는"],["쉬는 시간","5분 타이머"],["소리에도 모양이 있어요","Spectrogram 화면"],["Kandinsky · Song Maker","누르는 곳 표시"],["오늘 배운 것","소리는 떨림 + 도장"]],
+  makes:["phone","guitar"],
+  mats:["종이컵 (2개 × 학생 수)","털실 또는 연실 (2m씩 잘라 두기)","이쑤시개","송곳 (교사용)","빈 티슈상자 (가정 협조)","굵기가 다른 고무줄","교사 태블릿 + TV, 모둠 태블릿 4대"]},
+
+ {id:4, color:4, title:"빛과 색 실험실", sub:"점으로 그리는 그림",
+  goal:"셀로판지로 색이 섞이는 모습을 관찰하고, 화면 속 그림이 작은 색깔 점(픽셀)과 숫자로 되어 있다는 것을 안다.",
+  principle:"빛과 색 · 그림은 점(픽셀)",
+  p1:{kind:"과학 + 언플러그드", name:"셀로판지 색안경 + 숫자 픽셀 그림", steps:[
+    ["도입",8,"셀로판지 색안경 쓰고 교실 둘러보기",["빨강·파랑·노랑 색안경을 바꿔 쓰며 \"세상이 무슨 색으로 보여요?\""]],
+    ["전개",27,"색 섞기와 픽셀 그림",["셀로판지 두 장 겹쳐서 새 색 만들기 (노랑+파랑, 빨강+노랑)","손전등에 셀로판지를 대 벽에 색 그림자 만들기","숫자 픽셀 그림: 8×8 칸 숫자대로 색칠하면 그림이 나타나요 (하트 → 로봇 도전)"]],
+    ["정리",5,"컴퓨터는 그림을 숫자로 기억해요",["여권에 4번 도장"]]]},
+  p2:{kind:"언플러그드 + 태블릿", name:"픽셀 비밀 편지 → AutoDraw", url:"autodraw.com", steps:[
+    ["비밀 편지",10,"내 그림을 숫자로 보내기",["활동지 뒷면 5×5 칸에 한 가지 색으로 간단한 모양(글자, 웃는 얼굴)을 칠하고, 칠한 칸에 1을 쓰기 → 짝이 숫자만 보고 빈 칸에 그대로 칠해 맞히기"]],
+    ["태블릿",23,"AutoDraw — AI와 함께 그림 그리기",["손가락으로 대충 그리면 위쪽 줄에 AI 추천 그림이 나와요","모둠 친구가 하나씩 그려 「우리 반 AI 실험실」 한 장면 완성","완성 화면을 띄워 둔 채 다른 모둠 자리 돌아보기"]],
+    ["정리",7,"AI 추천과 내 생각이 같았나요?",["가장 신기했던 추천 그림 발표, 여권 도장 확인"]]],
+    tip:"출력은 하지 않아요. 잘된 작품은 교사 태블릿으로 화면을 찍어 6차시 박람회에 보여 줘요. 왼쪽 도구에서 'AutoDraw'(별 모양 펜)를 고른 상태여야 추천이 나와요."},
+  slides:[["표지","빛과 색 실험실"],["색안경 미션","무슨 색으로 보여요?"],["색 섞기","겹치면 어떤 색?"],["숫자 픽셀 그림","1=빨강, 2=파랑, 3=노랑"],["확대하면 점이 보여요","사진 확대 3단계"],["비밀 편지","그림 → 숫자 → 그림"],["AutoDraw 하는 법","① 그리기 ② 추천 누르기"],["갤러리 걷기","다른 모둠 작품 보기"],["오늘 배운 것","그림은 점과 숫자 + 도장"]],
+  makes:["cello","pixel"],
+  mats:["색 셀로판지 (빨강·파랑·노랑)","색안경 틀 (출력)","미니 손전등 4개","픽셀 활동지 (학생 수만큼)","색연필","교사 태블릿 + TV, 모둠 태블릿 4대"]},
+
+ {id:5, color:5, title:"코딩 보물섬", sub:"블록 카드 보드게임과 버그 찾기",
+  goal:"퍼즐 블록 카드를 이어 로봇 말을 움직이고, 틀린 순서를 찾아 고치는(디버깅) 경험을 한다.",
+  principle:"순차 · 반복 · 디버깅",
+  p1:{kind:"언플러그드 보드게임", name:"격자판 블록 코딩 「로봇 보물섬」", steps:[
+    ["도입",7,"1차시 블록 카드 다시 만나기",["교사가 발표자료로 격자판·타일·블록 카드를 보여 주고 미션 1을 함께 풀기"]],
+    ["전개",28,"짝(또는 3명) 미션 도전",["미션 카드를 뽑아 그림대로 장애물·보물 타일을 격자판에 놓기","블록 카드를 '시작하기'부터 퍼즐처럼 이어 붙이고, 로봇 말을 카드대로 움직여 확인","성공하면 보석 1개. 미션 1~3은 앞으로·돌기만, 미션 4부터 반복 블록 사용","빨리 끝난 짝은 장애물을 직접 놓아 친구에게 문제 내기"]],
+    ["정리",5,"반복 블록을 쓰니 무엇이 좋았나요?",["카드가 줄어요! 여권에 5번 도장"]]]},
+  p2:{kind:"언플러그드 + 태블릿", name:"버그 발견! 카드 게임 → Code.org 미로", url:"studio.code.org/hoc/1", steps:[
+    ["버그 발견!",12,"순서 카드 속 틀린 곳 찾기",["모둠마다 순서 카드 줄(양치하기, 신발 신기 등 4장) 4묶음. 한 장씩 순서가 틀려 있어요","틀린 카드를 찾으면 분홍 '버그 발견!' 카드를 올려놓고 바르게 고치기"]],
+    ["태블릿",21,"Code.org 미로 퍼즐 — 짝 코딩",["한 명은 블록 놓기, 한 명은 화면 보며 확인, 한 단계마다 역할 바꾸기","막히면 격자판에서 먼저 움직여 보기. 5~6단계가 목표"]],
+    ["정리",7,"가장 어려웠던 단계와 고친 방법",["여권 도장 확인"]]],
+    tip:"로그인 없이 바로 시작돼요. 오른쪽 위 언어를 한국어로 바꾸세요. 블록은 손가락을 길게 눌렀다가 끌어요. 영상이 나오면 X로 넘어가요."},
+  slides:[["표지","코딩 보물섬!"],["격자판과 타일","출발·장애물·보물·보석"],["블록 카드 8종","시작하기 ~ 도착!"],["반복 블록","감싸면 여러 번"],["미션 1 함께 풀기","정답 블록 줄"],["쉬는 시간","5분 타이머"],["버그 발견!","틀린 카드 찾기 규칙"],["카드 = 화면 블록","Code.org 미로 화면"],["오늘 배운 것","고쳐 보는 게 코딩 + 도장"]],
+  makes:["board","blocks","bugfind","piece"],
+  mats:["격자판 4장 (A3 코팅)","타일 (장애물·보물·보석) × 4세트","미션 카드 6장 × 4세트","블록 카드 × 4세트","버그 발견! 카드 4묶음 × 4모둠 + 분홍 카드","로봇 말 (병뚜껑)","교사 태블릿 + TV, 모둠 태블릿 4대"]},
+
+ {id:6, color:6, title:"AI 발명가 박람회", sub:"내가 만든 AI 친구",
+  goal:"나를 도와주는 AI 로봇을 상상해 만들고, AI와 함께 지낼 때 지킬 약속을 안다.",
+  principle:"미래 기술 상상 · 바른 AI 태도",
+  p1:{kind:"언플러그드", name:"AI 약속 OX 몸놀이 + AI 로봇 발명", steps:[
+    ["도입",8,"AI 약속 OX 퀴즈 6문제",["바닥의 예(O)/아니오(X) 표지판 쪽으로 이동해서 답하기 (2차시 표지판 다시 사용)"]],
+    ["전개",27,"「나를 도와주는 AI 로봇」 발명 활동지",["큰 칸에 로봇 그리기 (재활용품을 붙여도 좋아요)","로봇 이름, 하는 일, 지킬 약속을 그림이나 한 단어로"]],
+    ["정리",5,"모둠 안에서 내 로봇 소개하기",[]]]},
+  p2:{kind:"태블릿", name:"Animated Drawings — 내 그림이 움직여요 + 박람회", url:"sketch.metademolab.com", steps:[
+    ["도입",5,"교사 태블릿 카메라로 로봇 그림 촬영",["그림만 찍고, 학생 얼굴과 이름은 찍지 않아요"]],
+    ["전개",25,"그림이 걷고 춤추는 모습 보기",["교사가 그림을 올리고 몸 위치 점을 확인한 뒤 춤·걷기·점프 중에서 고르기 (TV로 함께 보기)","시간이 모자라면 모둠별 대표 그림 1장씩","발명 박람회: 활동지와 4차시 AutoDraw 사진 전시, 친구 작품에 칭찬 스티커"]],
+    ["정리",10,"여권 완성과 수료식",["여권 도장 6개 확인 → 「AI 탐험가 수료증」, 소감 한마디"]]],
+    tip:"교사 태블릿에서만 써요(로그인 없음). 사진 활용 동의 단계에서 연구용 활용 항목은 고르지 않아도 돼요. 수업 전날 그림 1장으로 미리 연습해 두세요."},
+  slides:[["표지","AI 발명가 박람회"],["AI 약속 OX","6문제, 표지판으로 이동"],["AI 로봇 발명가","활동지 쓰는 법"],["예시 로봇","숙제 도우미 로봇"],["쉬는 시간","5분 타이머"],["그림이 움직여요","Animated Drawings 단계"],["박람회 약속","칭찬 스티커 붙이는 법"],["6번의 탐험 돌아보기","차시별 사진"],["수료식","AI 탐험가 수료증"]],
+  makes:["ox","invent","cert"],
+  mats:["예/아니오 바닥 표지판 (2차시 것)","발명 활동지 (학생 수만큼)","휴지심·병뚜껑·작은 상자 (재활용)","테이프, 사인펜, 색연필","칭찬 스티커","AI 탐험가 수료증","교사 태블릿 + TV"]}
+];
+
+/* 교안 평가 후 보강: 로보 이야기(동화 도입), 수준별 지도, 인터넷이 안 될 때, 확인 질문 */
+const EXTRA = {
+ 1:{story:"실험실에 새 친구 '로보'가 왔어요. 그런데 로보는 \"샌드위치 만들어 줘\"라는 말을 못 알아들어요. 로보에게 말하는 법을 알려 줄까요?",
+    help:"순서 카드 뒤에 1~6 점을 찍은 쉬운 카드 사용, 사람 로봇은 교사와 함께 명령하기",
+    hard:"순서 카드 1장을 빼고 무엇이 빠졌는지 맞히기, 사람 로봇 길에 의자 장애물 추가",
+    planb:"Quick, Draw! 대신 '사람 AI 그림 맞히기': 한 명이 20초 동안 그리고 모둠 친구들이 AI가 되어 맞혀요",
+    check:"로봇에게 명령할 때 왜 순서가 중요할까요?"},
+ 2:{story:"로보가 바닷가에 갔더니 물고기와 쓰레기가 뒤섞여 있어요. 로보는 무엇이 쓰레기인지 몰라요. 우리가 가르쳐 줘요!",
+    help:"땅·물·하늘 3칸 대신 '살아 있다 / 아니다' 2칸 분류부터 시작",
+    hard:"모둠이 새 기준을 몰래 정해 나누고, 다른 모둠이 기준 맞히기",
+    planb:"AI for Oceans 대신 '사람 AI 훈련': AI 역할 친구에게 물고기·쓰레기 카드 5장을 보여 주며 가르친 뒤, 새 카드를 맞히게 해요",
+    check:"AI가 쓰레기를 잘 고르려면 무엇이 필요할까요?"},
+ 3:{story:"로보의 귀(마이크)가 이상해요. 박수 소리와 노랫소리를 구별하지 못해요. 소리의 비밀을 찾아 로보를 도와줘요.",
+    help:"실전화 매듭은 짝이나 교사가 도와주기, 기타 고무줄은 2개만",
+    hard:"실 길이 1m와 3m 비교하기, Song Maker로 8마디 노래 만들기",
+    planb:"Spectrogram 대신 '몸으로 소리 그리기': 높은 소리는 손을 위로, 낮은 소리는 아래로, 긴 소리는 손을 길게",
+    check:"실전화 소리가 잘 들리려면 실을 어떻게 해야 할까요?"},
+ 4:{story:"로보의 눈(카메라)에는 세상이 작은 네모 점으로 보인대요. 로보처럼 점으로 그림을 그려 볼까요?",
+    help:"하트만 색칠하기, 비밀 편지는 4칸만 쓰기",
+    hard:"로봇 그림까지 색칠하고, 비밀 편지를 두 가지 색으로 보내기",
+    planb:"AutoDraw 대신 '추천 AI 놀이': 한 친구가 그림을 반만 그리면 다른 친구들이 무엇인지 세 가지 추천해요",
+    check:"컴퓨터는 그림을 어떻게 기억할까요?"},
+ 5:{story:"로보가 보물섬에서 길을 잃었어요! 블록 카드로 길을 알려 주고, 고장 난 명령(버그)도 고쳐 줘요.",
+    help:"미션 1~2만 하기, 반복 블록 빼기, 교사가 첫 블록 두 장 놓아 주기",
+    hard:"반복 블록으로 가장 적은 카드 수에 도전, 친구에게 장애물 지도 문제 내기",
+    planb:"Code.org 대신 격자판 미션 5·6과 버그 발견! 다섯 번째 묶음(샌드위치 카드)",
+    check:"버그를 찾으면 어떻게 해야 할까요?"},
+ 6:{story:"로보가 고맙다며 부탁을 해요. \"나 말고 다른 AI 친구도 만들어 줄래? 사람을 도와주는 착한 친구로!\"",
+    help:"발명 활동지는 글 대신 그림으로만, 로봇 이름만 쓰기",
+    hard:"내 로봇이 하는 일을 순서 카드 3장으로 설명하기",
+    planb:"Animated Drawings 대신 '그림 인형극': 로봇 그림을 오려 나무젓가락에 붙이고 움직이며 소개해요",
+    check:"AI와 함께 지낼 때 지킬 약속 한 가지는 무엇인가요?"}
+};
+S.forEach(s=>{Object.assign(s,EXTRA[s.id]);s.slides.splice(1,0,["로보 이야기",s.story.split(".")[0]+"…"])});
+S[0].mats.splice(1,0,"로보 인형 (집에 있는 인형에 종이 로봇 머리띠, 6차시까지 마스코트)","모둠 역할 카드 4장 × 4모둠");
+S[0].makes.push("roles");
+
+const RUBRIC=[
+ ["논리적 사고력","순서·블록을 스스로 바르게 놓고 틀린 곳을 고친다","친구나 교사의 도움으로 순서를 맞춘다","순서 놓기를 어려워한다"],
+ ["호기심","질문을 하거나 '도전' 활동에 스스로 나선다","활동에 즐겁게 참여한다","보기만 하고 참여가 적다"],
+ ["창의적 문제해결력","새 기준, 새 문제, 발명 아이디어를 낸다","주어진 방법으로 문제를 해결한다","시작을 어려워한다"],
+ ["협력·태도","차례를 지키고 친구를 돕는다","차례를 지킨다","차례 다툼이 잦다"]
+];
+const REQS=[
+ ["1~2월, 6차시 × 차시당 2교시","6차시 12교시, 교시마다 40분 흐름표","충족"],
+ ["AI와 과학 원리를 쉽고 재미있게","AI 4차시(1·2·5·6) + 과학 2차시(3 소리, 4 빛·색), 매 차시 로보 이야기로 시작","충족"],
+ ["논리적 사고력·호기심·창의적 문제해결력","운영 목적 4가지 + 관찰 평가 기준표","충족"],
+ ["직접 준비할 수 있는 언플러그드 놀이","제작물은 모두 출력·자르기·코팅 수준, 블록 카드도 네모로 자르도록 쉽게 바꿈","충족"],
+ ["다양한 웹 프로그램과 엮기","6개 사이트, 차시마다 언플러그드 활동 뒤에 같은 원리로 연결","충족"],
+ ["1~2학년 수준","10~15분 전환, 몸놀이, 차시별 도움·도전 활동","충족"],
+ ["보드게임 1개, 비용 고려","5차시 「코딩 보물섬」 출력·코팅으로 약 5천 원","충족"],
+ ["한글 파일","놀며배우는_AI탐구실험실_운영계획서.hwpx","충족"],
+ ["학교 태블릿만, 웹캠 없음","태블릿 브라우저 사이트만, 카메라는 6차시 교사 태블릿에서만","충족"],
+ ["로그인 필요한 프로그램 제외","6개 모두 로그인 없음 (AI for Oceans, Animated Drawings 접속 확인)","충족"],
+ ["발표자료를 보여 주며 진행","차시별 슬라이드 10장 구성과 공통 틀 제시 (발표자료 파일은 아직 없음)","구성만"],
+ ["제작물 상세 설명","크기·수량·만드는 법·난이도·그림, 제작 일정","충족"],
+ ["PDF 윗부분 반영","놀이·카드·보드게임·신체놀이, 샌드위치·보물지도, 언플러그드 60% 이상, 교육과정 3개, 동화(로보 이야기)·캐릭터 인형","충족"],
+ ["참고 수업 사진 반영","퍼즐 블록, 격자판, 버그 발견, 예/아니오 표지판, 사람 로봇, 카드 분류, 분리배출판","충족"]
+];
+
+/* 블록 카드: 사진 속 퍼즐 블록 모양 */
+const BLK = {
+  start:{t:"시작하기",c:"var(--c1)",n:1},
+  f1:{t:"앞으로 1칸",c:"var(--c2)",n:8},
+  f2:{t:"앞으로 2칸",c:"var(--c2)",n:2},
+  b1:{t:"뒤로 1칸",c:"var(--c2)",n:2},
+  r90:{t:"오른쪽으로 90° 돌기",c:"var(--c3)",n:3},
+  l90:{t:"왼쪽으로 90° 돌기",c:"var(--c3)",n:3},
+  rep:{t:"□번 반복하기",c:"var(--c6)",n:2},
+  end:{t:"도착! 말하기",c:"var(--c5)",n:1}
+};
+function blk(k,showN){const b=BLK[k];
+  if(k==="rep") return `<div class="blkwrap"><svg viewBox="0 0 190 96" width="190" height="96" role="img" aria-label="${b.t}"><path d="M0 6q0-6 6-6h14l4 6h12l4-6h144q6 0 6 6v20q0 6-6 6h-130v32h130q6 0 6 6v20q0 6-6 6h-148l-4 6h-12l-4-6h-10q-6 0-6-6z" fill="${b.c}"/><text x="14" y="22" fill="#fff" font-size="13" font-weight="700">2번 · 3번 반복하기</text><text x="44" y="53" class="mutedf" font-size="11">← 이 안에 블록을 끼워요</text></svg>${showN?`<span class="cnt">${b.n}장</span>`:""}</div>`;
+  return `<div class="blkwrap"><svg viewBox="0 0 190 52" width="190" height="52" role="img" aria-label="${b.t}"><path d="M0 6q0-6 6-6h14l4 6h12l4-6h144q6 0 6 6v34q0 6-6 6h-144l-4 6h-12l-4-6h-14q-6 0-6-6z" fill="${b.c}"/><text x="14" y="29" fill="#fff" font-size="13" font-weight="700">${b.t}</text></svg>${showN?`<span class="cnt">${b.n}장</span>`:""}</div>`}
+
+const MAKE = {
+ passport:{name:"AI 탐험가 여권", use:"1~6차시", size:"A4 가로 1장을 반으로 접기 (A5 4면)", qty:"학생 수 + 여유 3장", level:1,
+  how:["한글에서 A4 가로 문서를 2단으로 나누기","오른쪽 면(앞표지): 제목, 이름 칸, 얼굴 그리기 칸","안쪽 면: 도장 동그라미 6개와 차시 이름","흑백 출력하고 학생이 표지를 색칠해요"],
+  fig:()=>`<div class="passport"><div><b style="font-family:var(--display)">탐험 도장</b><div class="stamps">${S.map(s=>`<span>${s.id}<br>${s.title.length>8?s.title.slice(0,7)+"…":s.title}</span>`).join("")}</div></div><div style="align-items:center;justify-content:center;text-align:center"><span class="eyebrow">놀며 배우는 AI 탐구 실험실</span><b style="font-family:var(--display);font-size:1.3rem">AI 탐험가 여권</b><div style="width:70px;height:80px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted)">내 얼굴<br>그리기</div><span class="small">이름: ________</span></div></div><figcaption>왼쪽 = 안쪽 도장 면, 오른쪽 = 앞표지.</figcaption>`},
+ seq:{name:"종이 샌드위치 + 순서 카드", use:"1차시 (5차시 버그 카드로 재사용)", size:"순서 카드: A4 한 장에 6장 (긴 띠 모양 18×4cm)", qty:"순서 카드 6장 × 4모둠 (A4 4장), 종이 샌드위치 1세트", level:1,
+  how:["종이 샌드위치: 색지로 빵 2장(갈색), 햄(분홍), 치즈(노랑), 상추(초록), 토마토(빨강)를 오려 두기. 음식을 쓰지 않아 알레르기 걱정이 없어요","순서 카드: 한글 표 1열×6행, 칸마다 단계 글 + 작은 그림. 카드마다 띠 색을 다르게 하면 1~2학년도 구별하기 쉬워요","코팅하면 5차시 '버그 발견!' 게임에도 다시 써요"],
+  fig:()=>`<div class="seq">${["빵 한 장을 접시에 놓아요","빵 위에 상추를 올려요","치즈를 올려요","햄을 올려요","토마토를 올려요","빵을 덮으면 완성!"].map((t,i)=>`<div style="--sc:var(--c${[1,2,3,4,5,6][i]})"><b>${i+1}</b>${t}</div>`).join("")}</div><figcaption>사진 속 수업처럼 색 띠 카드를 섞어 두고, 순서대로 놓은 모둠이 손을 들어요.</figcaption>`},
+ blocks:{name:"퍼즐 블록 카드", use:"1차시 · 5차시", size:"블록 1장 9×3cm (반복 블록 9×6cm), A4 한 장에 2열×8행 = 16장", qty:"1세트 22장 × 4세트 = 88장 (A4 6장)", level:1,
+  how:["한글에서 2열×8행 표를 만들고 칸마다 바탕색과 글자만 넣기. 퍼즐 홈·돌기는 칸 위아래에 작은 흰 네모·색 네모를 그려 '모양만' 보이게 해요","자를 때는 표 선을 따라 네모로 자르면 끝. 홈 모양으로 오릴 필요 없어요","색: 시작 초록, 움직이기 파랑, 돌기 주황, 반복 빨강, 도착 보라","반복 블록은 두 칸을 합친 큰 카드에 'ㄷ' 모양을 그려 두고, 다른 블록을 그 위에 겹쳐 놓아요","컬러 출력 → 코팅 → 재단기로 한 번에 자르기. 반복 숫자는 보드마커로 2, 3"],
+  fig:()=>`<div class="blks">${Object.keys(BLK).map(k=>blk(k,true)).join("")}</div><figcaption>1세트 = 시작 1, 앞으로 1칸 8, 앞으로 2칸 2, 뒤로 1칸 2, 오른쪽 3, 왼쪽 3, 반복 2, 도착 1 (22장). 돌기는 제자리에서 방향만 바꿔요.</figcaption>`},
+ sort:{name:"동물·탈것 카드 + 땅·물·하늘 분류판", use:"2차시", size:"카드: A4 한 장에 8장 (약 10×7cm) / 분류판: A3 가로 3칸", qty:"카드 20장 × 4세트 (A4 컬러 10장), 분류판 4장", level:1,
+  how:["카드는 한글 표 2열×4행에 이모지를 80pt로 크게 넣고 아래에 이름","분류판은 A3 가로 3칸: 땅(갈색) · 물(파랑) · 하늘(하늘색), 칸 위에 큰 글씨","세트마다 뒷면에 모둠 색 스티커"],
+  fig:()=>`<div class="bins3">${[["땅","var(--sand)",["🐶 강아지","🐱 고양이","🐔 닭","🐍 뱀","🚗 자동차","🚌 버스","🚲 자전거","🚂 기차"]],["물","var(--sea)",["🐟 물고기","🐙 문어","🐢 거북","🐧 펭귄","🚢 배","🛶 카누"]],["하늘","var(--t2)",["🦋 나비","🦅 독수리","🐦 참새","🦆 오리","✈️ 비행기","🚁 헬리콥터"]]].map(([n,bg,items])=>`<div style="background:${bg}"><b>${n}</b><div class="pcards">${items.map(x=>{const[e,t]=x.split(" ");return `<div class="pc"><span class="e">${e}</span>${t}</div>`}).join("")}</div></div>`).join("")}</div><figcaption>오리·거북·펭귄처럼 두 곳에 살 수 있는 카드가 섞여 있어서 "왜 여기에 놓았어?" 이야기가 생겨요. 정답은 하나가 아니에요.</figcaption>`},
+ roles:{name:"모둠 역할 카드", use:"1~6차시", size:"명함 크기, 목걸이 또는 책상 위 세움", qty:"4장 × 4모둠 (A4 2장)", level:1,
+  how:["역할 4가지: 태블릿 대장(화면 누르기), 카드 대장(카드 나누고 정리), 발표 대장(모둠 결과 말하기), 응원 대장(차례 확인·칭찬)","차시마다 시계 방향으로 역할 바꾸기 → 태블릿 다툼이 줄어요","주의 집중 신호: 교사 \"AI 탐험대!\" → 학생 \"출동!\" 하고 손 머리 위로"],
+  fig:()=>`<div class="cards">${[["태블릿 대장","var(--c2)","화면 누르기"],["카드 대장","var(--c3)","나누고 정리"],["발표 대장","var(--c5)","결과 말하기"],["응원 대장","var(--c1)","차례·칭찬"]].map(([a,c,b])=>`<div class="ccard" style="background:${c}">${a}<span class="cnt">${b}</span></div>`).join("")}</div><figcaption>사진 속 수업처럼 강사가 혼자 4모둠을 볼 때, 역할을 정해 두면 진행이 훨씬 가벼워져요.</figcaption>`},
+ yesno:{name:"예/아니오 바닥 표지판", use:"2차시 · 6차시", size:"A4 2장", qty:"1세트 (코팅)", level:1,
+  how:["A4 한 장에 큰 ○와 '예', 다른 한 장에 큰 ×와 '아니오'","코팅해서 교실 바닥 양쪽 끝에 테이프로 붙이기","학생은 질문을 듣고 답하는 쪽으로 걸어가요"],
+  fig:()=>`<div style="display:flex;gap:16px;flex-wrap:wrap"><div class="sign" style="--sc:var(--c1)"><span>○</span>예</div><div class="sign" style="--sc:var(--c6)"><span>×</span>아니오</div></div><figcaption>사진 속 수업처럼 바닥에 놓고 몸으로 움직이며 답하면 1~2학년이 훨씬 즐거워해요.</figcaption>`},
+ tree:{name:"스무고개 질문 나무 (발표자료 1장)", use:"2차시", size:"슬라이드 1장", qty:"출력하지 않아요", level:1,
+  how:["질문 상자 3개와 화살표를 그려요","몸 스무고개 뒤에 \"우리가 한 질문이 이렇게 생겼어요\"로 보여 줘요"],
+  fig:()=>treeSVG()},
+ recycle:{name:"분리배출 놀이판 + 쓰레기 카드", use:"2차시", size:"놀이판 A3 가로 / 카드 5×5cm", qty:"놀이판 4장, 카드 16장 × 4세트", level:1,
+  how:["A3에 통 4개를 그리고 색과 이름 넣기: 종이(파랑), 플라스틱(노랑), 캔(회색), 유리병(초록)","카드 16장: 통마다 4장씩 그림 + 이름","코팅하면 수업마다 다시 써요"],
+  fig:()=>`<div class="bins4">${[["종이","var(--c2)",["신문지","택배 상자","공책","종이 가방"]],["플라스틱","var(--c4)",["생수병","요구르트병","샴푸 통","플라스틱 컵"]],["캔","var(--muted)",["음료수 캔","참치 캔","과자 깡통","통조림 캔"]],["유리병","var(--c1)",["주스병","잼 병","소스 병","음료 유리병"]]].map(([n,c,items])=>`<div style="--sc:${c}"><b>${n}</b>${items.map(i=>`<span>${i}</span>`).join("")}</div>`).join("")}</div><figcaption>바로 이어지는 AI for Oceans에서 "쓰레기 고르기를 AI에게 가르쳐요"로 연결돼요.</figcaption>`},
+ phone:{name:"종이컵 실전화", use:"3차시", size:"종이컵 2개 + 실 2m", qty:"학생 2명당 1개", level:1,
+  how:["교사가 송곳으로 컵 바닥 가운데에 작은 구멍 뚫기","실을 2m씩 잘라 두기","학생이 실을 구멍에 끼우고 안쪽에서 이쑤시개 반 토막에 묶기"],
+  fig:()=>phoneSVG()},
+ guitar:{name:"티슈상자 고무줄 기타", use:"3차시", size:"빈 티슈상자 1개 + 고무줄 3개", qty:"학생 2명당 1개", level:1,
+  how:["가정 통신으로 빈 티슈상자 모으기 (1주 전)","굵은·중간·가는 고무줄을 구멍 위로 걸기","연필 1자루를 고무줄 아래 끼우면 소리가 더 잘 나요"],
+  fig:()=>guitarSVG()},
+ cello:{name:"셀로판지 색안경", use:"4차시", size:"A4 두꺼운 종이에 안경 틀 2개", qty:"학생 수만큼", level:1,
+  how:["안경 틀을 출력해 눈 부분을 교사가 미리 오리기","학생이 셀로판지를 틀 뒤에 테이프로 붙이기","손전등용 셀로판지 조각(10×10cm) 따로 준비"],
+  fig:()=>celloSVG()},
+ pixel:{name:"숫자 픽셀 활동지", use:"4차시", size:"A4 세로, 앞면 8×8 칸 2개 + 뒷면 빈 5×5 칸 2개", qty:"학생 수 + 여유", level:1,
+  how:["한글에서 8×8 표, 칸 크기 1.5cm","아래 숫자를 그대로 적기 (0은 빈칸)","위쪽에 색 번호: 1 빨강, 2 파랑, 3 노랑","뒷면 빈 5×5 칸(칸 2cm) 2개 → 2교시 '비밀 편지'에서 한 칸은 내 그림, 한 칸은 짝의 숫자 받아 그리기"],
+  fig:()=>pixelFig()},
+ board:{name:"격자판 「로봇 보물섬」 + 타일 + 미션 카드", use:"5차시", size:"격자판 A3 6×6 (한 칸 약 4.5cm) / 타일 4×4cm / 미션 카드 A6", qty:"격자판 4장(코팅), 타일 1세트(장애물 4·보물 1·보석 3) × 4, 미션 카드 6장 × 4", level:2,
+  how:["격자판은 빈 6×6 칸에 왼쪽 아래 '출발'만 표시. 무엇을 어디에 둘지는 미션 카드가 정해서 한 판을 여러 번 써요","타일: 장애물(바위 그림), 보물(상자), 보석(반짝이). 두꺼운 종이에 출력 후 코팅","미션 카드: 작은 6×6 그림에 타일 위치 표시 + 조건 한 줄 (아래 6가지)"],
+  fig:()=>boardFig()},
+ bugfind:{name:"버그 발견! 카드", use:"5차시", size:"순서 카드 A6 크기 / 분홍 '버그 발견!' 카드", qty:"순서 카드 4장 × 4묶음 × 4모둠, 분홍 카드 모둠당 4장", level:1,
+  how:["흰 카드에 단계 글 + 화살표, 묶음마다 두 장의 순서를 일부러 바꿔 출력 (정답은 교사용 표에)","분홍 카드에 고장 난 로봇 그림과 '버그 발견!' 글자","1차시 샌드위치 카드를 섞어 다섯 번째 묶음으로 써도 돼요"],
+  fig:()=>`<div class="bugs">${[["양치하기",["칫솔에 치약 짜기","이 닦기","물로 헹구기","칫솔 씻기"],[1,0,2,3]],["신발 신고 나가기",["양말 신기","신발 신기","문 열기","밖으로 나가기"],[0,2,1,3]],["씨앗 심기",["화분에 흙 담기","씨앗 넣기","물 주기","싹이 나요"],[0,1,3,2]],["손 씻기",["물 묻히기","비누칠하기","물로 헹구기","수건으로 닦기"],[0,2,1,3]]].map(([t,st,ord])=>`<div class="bugrow"><b>${t}</b><div>${ord.map((o,i)=>`<span class="${o!==i?"wrong":""}">${st[o]}</span>`).join("<i>→</i>")}</div></div>`).join("")}<div class="bugcard"><b>버그 발견!</b><span>틀린 카드 위에 올려요</span></div></div><figcaption>빨간 테두리가 순서가 바뀐 카드(교사용 정답)예요. 학생 카드에는 표시하지 않아요.</figcaption>`},
+ piece:{name:"로봇 말", use:"5차시", size:"페트병 뚜껑 + 원형 스티커", qty:"모둠당 2~4개", level:1,
+  how:["뚜껑을 1주 전부터 모으기","원형 스티커에 로봇 얼굴을 그려 붙이기","머리 위 작은 삼각형 = 로봇이 보는 방향 (돌기 카드에 필요)"],
+  fig:()=>pieceSVG()},
+ ox:{name:"AI 약속 OX 퀴즈 (발표자료)", use:"6차시", size:"슬라이드 6장 + 바닥 표지판", qty:"표지판은 2차시 것 사용", level:1,
+  how:["한 장에 문제 하나, 큰 글씨","학생은 예(O)/아니오(X) 표지판 쪽으로 이동","정답 슬라이드에 이유 한 줄"],
+  fig:()=>`<ol class="small" style="margin:0;padding-left:20px;display:grid;gap:6px">${[["AI도 틀릴 수 있어요.","O"],["AI는 사람처럼 아프고 슬퍼해요.","X"],["내 얼굴 사진은 아무 사이트에나 올려도 돼요.","X"],["AI에게 많이, 바르게 가르쳐 주면 더 잘 맞혀요.","O"],["AI가 알려 준 답은 어른께 한 번 더 물어보면 좋아요.","O"],["로봇청소기도 AI를 쓸 수 있어요.","O"]].map(([q,a])=>`<li>${q} <b style="color:${a==="O"?"var(--c1)":"var(--c6)"}">${a}</b></li>`).join("")}</ol>`},
+ invent:{name:"AI 로봇 발명 활동지", use:"6차시", size:"A4 세로", qty:"학생 수 + 여유", level:1,
+  how:["위쪽 2/3: 큰 그림 칸","아래: 로봇 이름 / 하는 일 / 지킬 약속","그림으로 채워도 돼요"],
+  fig:()=>`<div class="sheet" style="width:min(100%,260px);aspect-ratio:1/1.414;display:flex;flex-direction:column;gap:8px"><b style="font-family:var(--display);text-align:center">나를 도와주는 AI 로봇</b><div style="flex:1;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem">로봇 그리기</div>${["로봇 이름","하는 일","지킬 약속"].map(t=>`<div class="small" style="border-bottom:1.5px solid var(--line);padding-bottom:2px">${t}:</div>`).join("")}</div>`},
+ cert:{name:"AI 탐험가 수료증", use:"6차시", size:"A4 가로", qty:"학생 수", level:1,
+  how:["한글 기본 상장 서식에 문구만 바꾸기","\"위 어린이는 놀며 배우는 AI 탐구 실험실 6번의 탐험을 모두 마쳤기에 이 수료증을 드립니다.\"","이름은 손글씨로"],
+  fig:()=>`<div class="sheet" style="width:min(100%,320px);aspect-ratio:1.414/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;border:3px double var(--c6)"><b style="font-family:var(--display);font-size:1.4rem">AI 탐험가 수료증</b><span class="small">이름: ________</span><span class="small muted">6번의 탐험을 모두 마쳤어요!</span></div>`}
+};
+
+/* ---------- illustrations ---------- */
+function treeSVG(){
+  const box=(x,y,w,t,c)=>`<rect x="${x}" y="${y}" width="${w}" height="34" rx="8" fill="var(--panel)" stroke="${c}" stroke-width="2"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" font-size="13" class="ink">${t}</text>`;
+  const leaf=(x,y,t)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="18">${t}</text>`;
+  const ln=(x1,y1,x2,y2,l)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--muted)" stroke-width="2"/><text x="${(x1+x2)/2+(x2>x1?8:-8)}" y="${(y1+y2)/2}" font-size="11" text-anchor="${x2>x1?"start":"end"}" class="mutedf">${l}</text>`;
+  return `<svg viewBox="0 0 560 230" width="560" style="max-width:100%">
+  ${box(210,8,140,"살아 있어요?","var(--c2)")}
+  ${ln(250,42,130,80,"예")}${ln(310,42,430,80,"아니오")}
+  ${box(50,80,160,"하늘을 날아요?","var(--c2)")}${box(350,80,160,"하늘을 날아요?","var(--c2)")}
+  ${ln(100,114,70,150,"예")}${ln(160,114,190,150,"아니오")}
+  ${ln(400,114,370,150,"예")}${ln(460,114,490,150,"아니오")}
+  ${leaf(70,178,"🦋🦅")}${leaf(70,202,"🐦🦆")}
+  ${leaf(190,178,"🐶🐱🐟")}${leaf(190,202,"🐙🐢🐧")}
+  ${leaf(370,178,"✈️🚁")}${leaf(490,178,"🚗🚌🚢")}${leaf(490,202,"🚲🚂🛶")}
+  </svg><figcaption>질문 하나로 카드가 반씩 줄어들어요. AI도 이렇게 질문을 이어 가며 답을 찾아요.</figcaption>`}
+
+function phoneSVG(){
+  return `<svg viewBox="0 0 520 170" width="520" style="max-width:100%">
+  <path d="M30 60 L80 70 L80 110 L30 120 Z" fill="var(--panel)" stroke="var(--c3)" stroke-width="2.5"/>
+  <path d="M490 60 L440 70 L440 110 L490 120 Z" fill="var(--panel)" stroke="var(--c3)" stroke-width="2.5"/>
+  <line x1="80" y1="90" x2="440" y2="90" stroke="var(--ink)" stroke-width="2"/>
+  <path d="M150 90 q10 -8 20 0 t20 0 t20 0 t20 0" fill="none" stroke="var(--c3)" stroke-width="2.5"/>
+  <text x="260" y="78" text-anchor="middle" font-size="12" class="ink">실 2m — 팽팽하게 당겨요</text>
+  <text x="190" y="116" text-anchor="middle" font-size="11" class="mutedf">떨림이 실을 따라가요</text>
+  <text x="55" y="145" text-anchor="middle" font-size="11" class="ink">말하는 컵</text>
+  <text x="465" y="145" text-anchor="middle" font-size="11" class="ink">듣는 컵</text>
+  <g transform="translate(200,130)"><rect width="120" height="34" rx="6" fill="var(--panel)" stroke="var(--line)"/><text x="60" y="15" text-anchor="middle" font-size="10" class="ink">컵 안쪽 매듭</text><line x1="20" y1="24" x2="100" y2="24" stroke="var(--c3)" stroke-width="4"/><text x="60" y="31" text-anchor="middle" font-size="8" class="mutedf">이쑤시개 반 토막에 묶기</text></g>
+  </svg>`}
+
+function guitarSVG(){
+  return `<svg viewBox="0 0 520 190" width="520" style="max-width:100%">
+  <rect x="60" y="40" width="300" height="120" rx="10" fill="var(--t3)" stroke="var(--c3)" stroke-width="2.5"/>
+  <ellipse cx="210" cy="100" rx="90" ry="28" fill="var(--panel)" stroke="var(--c3)" stroke-width="2"/>
+  <rect x="80" y="62" width="10" height="76" rx="3" fill="var(--c4)"/>
+  <line x1="60" y1="78" x2="360" y2="78" stroke="var(--ink)" stroke-width="5"/>
+  <line x1="60" y1="100" x2="360" y2="100" stroke="var(--ink)" stroke-width="3"/>
+  <line x1="60" y1="122" x2="360" y2="122" stroke="var(--ink)" stroke-width="1.5"/>
+  <g font-size="12" class="ink">
+   <text x="380" y="82">굵은 줄 → 낮은 소리</text><text x="380" y="104">중간 줄</text><text x="380" y="126">가는 줄 → 높은 소리</text>
+   <text x="62" y="30">빈 티슈상자 (구멍이 위로)</text><text x="60" y="180" class="mutedf">노란 막대 = 연필 (줄을 살짝 띄워요)</text>
+  </g></svg>`}
+
+function celloSVG(){
+  return `<svg viewBox="0 0 520 170" width="520" style="max-width:100%">
+  <g transform="translate(20,30)">
+   <rect x="0" y="20" width="220" height="70" rx="30" fill="var(--panel)" stroke="var(--ink)" stroke-width="2.5"/>
+   <circle cx="62" cy="55" r="26" fill="var(--c6)" opacity=".55"/><circle cx="158" cy="55" r="26" fill="var(--c2)" opacity=".55"/>
+   <path d="M95 50 q15 -14 30 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+   <text x="110" y="118" text-anchor="middle" font-size="12" class="ink">두꺼운 종이 안경 틀 + 셀로판지</text>
+  </g>
+  <g transform="translate(300,20)" style="mix-blend-mode:multiply">
+   <circle cx="60" cy="60" r="45" fill="#F2C230" opacity=".85"/><circle cx="120" cy="60" r="45" fill="#2F6FEB" opacity=".7"/><circle cx="90" cy="105" r="45" fill="#E0453A" opacity=".7"/>
+  </g>
+  <text x="390" y="165" text-anchor="middle" font-size="12" class="ink">겹치면 새 색이 생겨요</text></svg>`}
+
+const HEART=["01100110","11111111","11111111","11111111","01111110","00111100","00011000","00000000"];
+const ROBOT=["00033000","02222220","02122120","02222220","02333320","02222220","00200200","02200220"];
+const PXC={0:"var(--panel)",1:"#E0453A",2:"#2F6FEB",3:"#F2C230"};
+function grid(rows,colored){return `<div class="px">${rows.join("").split("").map(v=>`<div style="${colored?`background:${PXC[v]};`:""}">${colored?"":(v==="0"?"":v)}</div>`).join("")}</div>`}
+function pixelFig(){
+  return `<div class="legend"><span><i style="background:#E0453A"></i>1 빨강</span><span><i style="background:#2F6FEB"></i>2 파랑</span><span><i style="background:#F2C230"></i>3 노랑</span><span><i style="background:var(--panel)"></i>빈칸 = 칠하지 않기</span></div>
+  <div class="pxrow" style="margin-top:12px">
+   <div><div class="small" style="margin-bottom:4px"><b>쉬움: 하트</b></div>${grid(HEART)}</div>
+   <div><div class="small muted" style="margin-bottom:4px">완성 모습</div>${grid(HEART,true)}</div>
+   <div><div class="small" style="margin-bottom:4px"><b>도전: 로봇</b></div>${grid(ROBOT)}</div>
+   <div><div class="small muted" style="margin-bottom:4px">완성 모습</div>${grid(ROBOT,true)}</div>
+  </div>`}
+
+const BOARD=[
+ [".","J",".",".",".","T"],
+ ["R",".",".","J",".","."],
+ [".",".",".","R",".","."],
+ [".",".",".",".",".","R"],
+ [".","R",".",".","J","."],
+ ["S",".",".",".",".","."]];
+const BCELL={".":["",""],J:["💎","보석"],T:["🎁","보물"],R:["🪨","장애물"],S:["🤖","출발"]};
+const MISSIONS=[["미션 1","장애물 없이 보물까지 (앞으로·돌기만)"],["미션 2","장애물 2개를 피해 보물까지"],["미션 3","블록 카드 6장 이하로 도착하기"],["미션 4","반복 블록을 꼭 한 번 쓰기"],["미션 5","보석 3개를 모으고 보물까지 (그림 예시)"],["미션 6","친구가 놓은 장애물 지도 풀기"]];
+function boardFig(){
+  return `<div class="pxrow"><div class="board">${BOARD.flat().map(k=>`<div class="${k}"><span class="e">${BCELL[k][0]}</span>${BCELL[k][1]}</div>`).join("")}</div>
+  <ul class="check small" style="--cc:var(--c5);flex:1;min-width:220px">${MISSIONS.map(([a,b])=>`<li><span><b>${a}</b> ${b}</span></li>`).join("")}</ul></div>
+  <figcaption>미션 5 배치 예시. 사진 속 수업의 '바닥 격자판'처럼 판은 비워 두고 타일만 옮기면 미션마다 새 지도가 돼요.</figcaption>
+  <ol class="small" style="margin:12px 0 0;padding-left:20px;display:grid;gap:4px">
+   <li>미션 카드를 뽑아 타일을 그림대로 놓아요.</li>
+   <li>짝과 함께 '시작하기'부터 블록 카드를 이어 붙여요. 마지막은 '도착! 말하기'.</li>
+   <li>한 명이 블록을 하나씩 읽고, 다른 한 명이 로봇 말을 움직여요.</li>
+   <li>장애물에 부딪히거나 판 밖으로 나가면 "버그!" → 블록을 고쳐 다시 실행해요.</li>
+   <li>성공하면 보석 구슬 1개. 다음 미션에서는 역할을 바꿔요.</li>
+  </ol>`}
+
+function pieceSVG(){
+  return `<svg viewBox="0 0 420 130" width="420" style="max-width:100%">
+  <ellipse cx="70" cy="95" rx="46" ry="12" fill="var(--line)"/>
+  <rect x="24" y="40" width="92" height="55" rx="10" fill="var(--c5)"/>
+  <circle cx="70" cy="40" r="34" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+  <circle cx="58" cy="36" r="5" fill="var(--ink)"/><circle cx="82" cy="36" r="5" fill="var(--ink)"/>
+  <path d="M58 50 q12 9 24 0" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+  <path d="M70 0 l8 10 h-16z" fill="var(--c6)"/>
+  <g font-size="12" class="ink"><text x="150" y="30">병뚜껑 위에 원형 스티커 얼굴</text>
+  <text x="150" y="54">빨간 삼각형 = 로봇이 보는 방향</text>
+  <text x="150" y="78">(돌기 블록을 쓸 때 이 방향을 돌려요)</text></g></svg>`}
+
+/* ---------- views ---------- */
+const views = {};
+function sessionLink(s){
+  return `<a href="#s${s.id}" style="--cc:var(--c${s.color});--tc:var(--t${s.color})">
+   <div class="num">${s.id}<small>차시</small></div>
+   <div><div class="ttl">${s.title}</div><div class="muted small">${s.sub}</div></div>
+   <div class="per"><span><i>1교시</i>${s.p1.name}</span><span><i>2교시</i>${s.p2.name}</span></div>
+   <div class="prn"><b>배우는 원리</b>${s.principle}</div></a>`}
+
+const PHOTO_LEARN=[
+ ["퍼즐 블록 카드와 책상 위 격자판","'시작하기 → 앞으로 1칸 → 3번 반복하기 → 도착! 말하기'를 퍼즐처럼 이어 붙이는 카드가 아이들 손에 가장 잘 맞았어요.","1·5차시 블록 카드, 5차시 격자판"],
+ ["'버그 발견!' 카드 게임","흰 순서 카드를 한 줄로 놓고 틀린 곳에 분홍 로봇 카드를 올리는 놀이. 글이 적어도 디버깅을 이해해요.","5차시 2교시"],
+ ["바닥의 예/아니오 표지판","질문에 답하는 쪽으로 걸어가며 웃고 움직이는 모습. 앉아서 손드는 것보다 참여가 커요.","2차시 몸 스무고개, 6차시 OX"],
+ ["의자 위 인형을 향한 사람 로봇","테이프 없이 빈 공간과 의자만으로 명령 놀이가 충분히 돼요. 준비가 가벼워요.","1차시 2교시"],
+ ["동물·탈것 그림카드 분류","선생님과 함께 카드를 줄 세우고 나누는 활동에 오래 집중했어요.","2차시 땅·물·하늘 분류"],
+ ["분리배출 놀이판","쓰레기 그림을 통에 넣는 판 놀이가 'AI에게 분류 가르치기'로 바로 이어져요.","2차시 2교시 → AI for Oceans"]
+];
+const PHOTO_ADAPT="사진 속 로봇 교구와 매트는 사업단 공용 교구라 이번 계획에서는 빼고, 같은 활동을 출력물과 태블릿으로 바꿨어요. 로봇 교구를 빌릴 수 있으면 5차시 1교시 격자판 활동을 로봇으로 바꿔 할 수 있어요.";
+
+views.home = ()=>`
+ <section class="hero">
+  <span class="eyebrow">2027 겨울방학 · 늘봄 방과후 · 초등 1~2학년 · 15명 이내</span>
+  <h1>놀며 배우는 AI 탐구 실험실</h1>
+  <p class="lead">어려운 코딩 언어 대신 놀이, 카드, 보드게임, 몸 움직임으로 AI와 과학 원리를 만나요. 매 차시 실험실 친구 '로보'의 이야기로 시작하고, 언플러그드로 먼저 익힌 원리를 학교 태블릿으로 다시 확인해요. 웹캠도 로그인도 필요 없어요.</p>
+  <div class="facts"><span><b>12교시</b> (6차시 × 40분 2교시)</span><span><b>언플러그드 약 70%</b> (480분 중 약 340분)</span><span><b>재료비 약 2만 원</b></span><span><b>태블릿</b> 교사 1대 + 모둠 4대</span></div>
+ </section>
+ <section class="view" style="gap:12px">
+  <h2>커리큘럼</h2>
+  <p class="muted small">차시를 누르면 수업 흐름, 발표자료 구성, 만들어야 할 것을 그림으로 볼 수 있어요.</p>
+  <div class="cur">${S.map(sessionLink).join("")}</div>
+ </section>
+ <section class="panel" style="--cc:var(--accent)">
+  <h3>참고 수업 사진에서 가져온 것</h3>
+  <p class="small muted" style="margin:6px 0 14px">같은 프로그램을 먼저 운영한 수업 사진 14장을 보고, 아이들이 가장 몰입한 장면을 이번 계획에 넣었어요.</p>
+  <div class="grid3">${PHOTO_LEARN.map(([a,b,c])=>`<div class="learn"><b>${a}</b><p class="small">${b}</p><span class="chip" style="--tc:var(--t2);--cc:var(--c2)">${c}</span></div>`).join("")}</div>
+  <p class="note" style="margin-top:14px">${PHOTO_ADAPT}</p>
+ </section>
+ <section class="grid2">
+  <div class="panel"><h3>이 프로그램이 기르는 힘</h3><ul class="check" style="margin-top:12px">
+   <li><span><b>논리적 사고력</b> · 순서대로 명령하고, 반복을 쓰고, 틀린 곳을 고쳐요.</span></li>
+   <li><span><b>호기심</b> · 소리, 빛, 색을 직접 실험하고 "왜 그럴까?"를 물어요.</span></li>
+   <li><span><b>창의적 문제해결력</b> · AI를 가르치고, 미션을 풀고, 로봇을 발명해요.</span></li>
+   <li><span><b>바른 AI 태도</b> · AI도 틀릴 수 있고, 내 얼굴과 이름은 소중한 정보예요.</span></li></ul></div>
+  <div class="panel"><h3>교육과정 연계</h3><ul class="check" style="margin-top:12px">
+   <li><span><b>[2슬04-04]</b> 도구를 활용하여 여러 가지 방법으로 표현한다. · 블록 카드, 픽셀 그림, AutoDraw</span></li>
+   <li><span><b>[2즐02-04]</b> 다양한 세상을 상상하고 표현한다. · AI 로봇 발명, 소리 노래 만들기</span></li>
+   <li><span><b>[2바03-04]</b> 새로운 활동에 호기심을 갖고 도전한다. · 실험, 미션, 버그 찾기</span></li></ul></div>
+ </section>
+ <section class="panel" style="--cc:var(--accent)">
+  <h3>1~2학년 운영 원칙</h3><ul class="check" style="margin-top:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
+   <li>활동은 10~15분마다 바꾸고, 교시마다 몸을 움직여요.</li>
+   <li>태블릿은 모둠이 함께 쓰고, 한 교시 화면 시간은 20분 안팎.</li>
+   <li>글 대신 그림, 스티커, 도장으로 기록해요 (AI 탐험가 여권).</li>
+   <li>교사는 발표자료를 TV에 띄워 단계마다 넘기며 진행해요.</li>
+   <li>모둠 역할(태블릿·카드·발표·응원 대장)을 차시마다 돌아가며 맡아요.</li>
+   <li>주의 집중 신호: "AI 탐험대!" → "출동!" 하고 손 머리 위로.</li>
+   <li>마스코트 '로보' 인형이 매 차시 문제를 들고 와요 (동화식 도입 2~3분).</li>
+   <li>인터넷이 안 되면 차시마다 정해 둔 언플러그드 대체 활동으로 바로 넘어가요.</li></ul>
+  <p class="small muted" style="margin-top:12px">태블릿·재료 준비는 <a href="#prep">준비 · 예산</a>에 모아 두었어요.</p>
+ </section>`;
+
+function stepList(p){
+  const total=p.steps.reduce((a,s)=>a+s[1],0);
+  return `<div class="timebar" aria-hidden="true">${p.steps.map(s=>`<span style="width:${s[1]/total*100}%"></span>`).join("")}</div>
+  <ol class="steps">${p.steps.map(([st,m,t,sub])=>`<li><span class="st">${st}</span><div><b>${t}</b>${sub.length?`<ul>${sub.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}</div><span class="tm">${m}분</span></li>`).join("")}</ol>`}
+
+function makeBlock(k){
+  const m=MAKE[k];
+  return `<article class="panel mk"><div><span class="chip">${m.use}</span><h3 style="margin-top:8px">${m.name}</h3>
+   <dl class="spec" style="margin-top:10px"><dt>크기</dt><dd>${m.size}</dd><dt>수량</dt><dd>${m.qty}</dd><dt>난이도</dt><dd><span class="stars">${"★".repeat(m.level)}${"☆".repeat(3-m.level)}</span> ${m.level===1?"출력하고 자르기만":"도형 그리기 + 재단"}</dd></dl>
+   <ol class="howto">${m.how.map(h=>`<li>${h}</li>`).join("")}</ol></div>
+   <figure class="fig">${m.fig()}</figure></article>`}
+
+S.forEach(s=>{
+  views["s"+s.id]=()=>{
+   const prev=S[s.id-2], next=S[s.id];
+   return `<div style="--cc:var(--c${s.color});--tc:var(--t${s.color})" class="view">
+   <header class="shead"><span class="n">${s.id}차시 · ${s.sub}</span><h1>${s.title}</h1>
+    <p class="lead">${s.goal}</p><div class="goal"><span class="chip">배우는 원리 · ${s.principle}</span></div>
+    <div class="story"><b>오늘의 로보 이야기</b> ${s.story}</div></header>
+   <section class="grid2">
+    ${[s.p1,s.p2].map((p,i)=>`<div class="panel period"><header><span class="tag">${i+1}교시</span><span class="chip">${p.kind}</span></header><h3>${p.name}</h3>${p.url?`<p class="small">주소: <b>${p.url}</b> · 로그인 없음</p>`:""}${stepList(p)}${p.tip?`<div class="tablet"><b>태블릿 팁</b> ${p.tip}</div>`:""}</div>`).join("")}
+   </section>
+   <section class="grid3 extra">
+    <div class="panel"><h3>수준별 지도</h3><p class="small" style="margin-top:8px"><b>도움이 필요할 때</b><br>${s.help}</p><p class="small" style="margin-top:8px"><b>빨리 끝났을 때</b><br>${s.hard}</p></div>
+    <div class="panel"><h3>인터넷이 안 될 때</h3><p class="small" style="margin-top:8px">${s.planb}</p></div>
+    <div class="panel"><h3>확인 질문</h3><p style="margin-top:8px;font-family:var(--display);font-size:1.15rem">"${s.check}"</p><p class="small muted" style="margin-top:6px">정리 시간에 묻고, 대답을 관찰 평가표(준비 · 예산)에 표시해요.</p></div>
+   </section>
+   <section class="panel"><h2>발표자료 구성 <span class="muted small" style="font-family:var(--body)">(${s.slides.length}장)</span></h2>
+    <p class="small muted" style="margin:6px 0 12px">교사 태블릿을 TV에 연결하고 한 장씩 넘기며 진행해요. 한 장에 한 가지, 글씨는 크게.</p>
+    <div class="slides">${s.slides.map(([a,b],i)=>`<div class="slide"><span class="sn">${i+1}</span><b>${a}</b><span class="muted">${b}</span></div>`).join("")}</div></section>
+   <section class="make"><h2>만들어야 할 것</h2>${s.makes.map(k=>makeBlock(k)).join("")}</section>
+   <section class="panel"><h2>준비물 체크</h2><ul class="check" style="margin-top:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))">${s.mats.map(m=>`<li>${m}</li>`).join("")}</ul></section>
+   <nav class="pager">${prev?`<a href="#s${prev.id}">← ${prev.id}차시 ${prev.title}</a>`:`<a href="#home">← 커리큘럼</a>`}${next?`<a href="#s${next.id}">${next.id}차시 ${next.title} →</a>`:`<a href="#prep">준비 · 예산 →</a>`}</nav>
+   </div>`}
+});
+
+const BUDGET=[["종이컵","1·3","50개 1줄","1,000원","실전화"],["털실 (또는 연실)","3","1개","1,000원","실전화"],["고무줄 (굵기 섞인 것)","3","1봉","1,000원","상자 기타"],["색 셀로판지","4","1세트","2,000원","색안경, 색 그림자"],["미니 손전등","4","4개","4,000원","학교에 있으면 0원"],["색 구슬","5","1봉","1,000원","보석"],["코팅필름 (A3·A4)","1·2·5","2팩","6,000원","블록 카드, 격자판, 분류판"],["원형 스티커","1~6","2팩","2,000원","로봇 말, 칭찬"],["칭찬 스탬프","1~6","1개","3,000원","여권 도장"],["출력물 전체","1~6","-","0원","학교 프린터 (컬러 약 45장)"],["색지·재활용품","1·3·5·6","-","0원","학교 비품, 가정 협조"]];
+const TIMELINE=[["개강 2주 전","가정 통신: 빈 티슈상자, 페트병 뚜껑, 휴지심 모으기 안내"],["개강 1주 전","로보 인형 머리띠, 모둠 역할 카드, 여권, 샌드위치 순서 카드, 종이 샌드위치, 블록 카드 4세트 출력·코팅·재단 / 태블릿 바로가기 설정"],["2차시 전","동물·탈것 카드, 분류판, 예/아니오 표지판, 분리배출 놀이판과 카드 출력·코팅"],["3차시 전날","종이컵 구멍 뚫기, 실 2m씩 자르기"],["4차시 전날","색안경 틀 오리기, 셀로판지 자르기, 픽셀 활동지 출력"],["5차시 1주 전","격자판 A3, 타일, 미션 카드, 버그 발견! 카드 출력·코팅"],["6차시 전날","발명 활동지·수료증 출력, Animated Drawings 연습"]];
+
+views.prep = ()=>`<div class="view" style="--cc:var(--accent);--tc:var(--t2)">
+ <header class="shead"><span class="n">수업 전 준비</span><h1>준비 · 예산</h1><p class="lead">모든 웹 프로그램은 태블릿 브라우저에서 바로 열리고 로그인이 없어요. 카메라는 6차시 교사 태블릿에서만 써요.</p></header>
+ <section class="panel"><h2>쓰는 웹 프로그램</h2><div class="tbl" style="margin-top:12px"><table>
+  <thead><tr><th>프로그램</th><th>주소</th><th>차시</th><th>누가 쓰나요</th><th>태블릿 권한</th></tr></thead><tbody>
+  ${WEB.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <p class="note" style="margin-top:12px">Teachable Machine은 웹캠이 있는 컴퓨터가 필요해서 뺐어요.</p></section>
+ <section class="grid2">
+  <div class="panel"><h3>태블릿 준비 (수업 1주 전)</h3><ol class="howto" style="margin-top:10px">${TABLET_PREP.map(t=>`<li>${t}</li>`).join("")}</ol></div>
+  <div class="panel"><h3>발표자료 공통 틀</h3><ol class="howto" style="margin-top:10px">${SLIDE_RULES.map(t=>`<li>${t}</li>`).join("")}</ol></div>
+ </section>
+ <section class="panel"><h2>제작 일정</h2><div class="tbl" style="margin-top:12px"><table>
+  <thead><tr><th>언제</th><th>할 일</th></tr></thead><tbody>${TIMELINE.map(([a,b])=>`<tr><td style="white-space:nowrap">${a}</td><td>${b}</td></tr>`).join("")}</tbody></table></div></section>
+ <section class="panel"><h2>재료비 (15명, 4모둠 기준)</h2><div class="tbl" style="margin-top:12px"><table>
+  <thead><tr><th>품목</th><th>차시</th><th>수량</th><th style="text-align:right">예상 금액</th><th>메모</th></tr></thead><tbody>
+  ${BUDGET.map(([a,b,c,d,e])=>`<tr><td>${a}</td><td>${b}</td><td>${c}</td><td class="n">${d}</td><td>${e}</td></tr>`).join("")}
+  </tbody><tfoot><tr><td>합계</td><td></td><td></td><td class="n">약 22,000원</td><td>다이소 가격 기준 예상</td></tr></tfoot></table></div>
+  <p class="note" style="margin-top:12px">사진 속 수업처럼 교구를 사지 않고 출력·코팅으로 만들어요. 비용 대부분이 코팅필름이에요. 사업단 공용 교구를 빌릴 수 있으면 그만큼 출력물이 줄어요.</p></section>
+ <section class="panel"><h2>관찰 평가 기준</h2><p class="small muted" style="margin-top:6px">차시마다 확인 질문과 활동 모습을 보고 학생별로 한 칸에 표시해요.</p><div class="tbl" style="margin-top:12px"><table>
+  <thead><tr><th>관찰 영역</th><th>잘함</th><th>보통</th><th>노력 필요</th></tr></thead><tbody>
+  ${RUBRIC.map(r=>`<tr>${r.map((c,i)=>i?`<td>${c}</td>`:`<td><b>${c}</b></td>`).join("")}</tr>`).join("")}</tbody></table></div></section>
+ <section class="panel"><h2>구성안 점검표</h2><p class="small muted" style="margin-top:6px">처음 요청부터 지금까지 요구한 조건을 하나씩 대조했어요.</p><div class="tbl" style="margin-top:12px"><table>
+  <thead><tr><th>요구 조건</th><th>반영 내용</th><th>상태</th></tr></thead><tbody>
+  ${REQS.map(([a,b,c])=>`<tr><td>${a}</td><td>${b}</td><td><span class="chip" style="--tc:${c==="충족"?"var(--t1)":"var(--t4)"};--cc:${c==="충족"?"var(--c1)":"var(--c4)"}">${c}</span></td></tr>`).join("")}</tbody></table></div></section>
+ <section class="panel"><h2>안전과 정보 보호</h2><ul class="check" style="margin-top:12px">${SAFETY.map(t=>`<li>${t}</li>`).join("")}</ul></section>
+ <nav class="pager"><a href="#s6">← 6차시</a><a href="#home">커리큘럼으로 →</a></nav>
+</div>`;
+const WEB=[["Quick, Draw!","quickdraw.withgoogle.com","1","모둠 태블릿","없음"],["AI for Oceans","code.org/oceans","2","모둠 태블릿","없음"],["Chrome Music Lab","musiclab.chromeexperiments.com","3","교사(Spectrogram) · 모둠","마이크 (Spectrogram만)"],["AutoDraw","autodraw.com","4","모둠 태블릿","없음"],["Code.org 미로 퍼즐","studio.code.org/hoc/1","5","모둠 태블릿 (짝)","없음"],["Animated Drawings","sketch.metademolab.com","6","교사 태블릿만","카메라 (그림 촬영)"]];
+const TABLET_PREP=["모둠 태블릿 4대에서 위 사이트를 하나씩 열어 확인하기","사이트마다 홈 화면 바로가기 추가 (크롬: ⋮ → 홈 화면에 추가 / 사파리: 공유 → 홈 화면에 추가)","교사 태블릿을 TV(전자칠판)에 미러링하는 방법 확인","Chrome Music Lab Spectrogram을 열어 마이크 '허용' 해 두기","Animated Drawings에 연습용 그림 1장 올려 보기","수업 전 충전 100%, 소리 중간"];
+const SLIDE_RULES=["차시마다 9장 안팎: 표지 → 약속 → 1교시 활동 → 2교시 활동 → 오늘 배운 것","글씨는 40pt 이상, 한 장에 한 가지 지시만","활동 슬라이드에는 남은 시간 타이머","웹 프로그램 슬라이드에는 실제 화면 캡처 + 누를 곳에 빨간 동그라미","마지막 장은 늘 같은 모양: 오늘 배운 한 문장 + 도장 그림"];
+const SAFETY=["송곳은 교사만 쓰고, 학생은 안전가위만 써요.","사람 로봇 놀이는 실내화 신고 천천히 걷기, 의자 주변 공간 넓게.","손전등 빛을 친구 눈에 비추지 않아요.","카메라로는 그림만 찍고, 학생 얼굴과 이름은 찍거나 올리지 않아요.","태블릿 활동 뒤에는 20초 동안 먼 곳 보기."];
+/* ---------- router ---------- */
+const nav=document.getElementById("nav"), app=document.getElementById("app");
+nav.innerHTML=`<a href="#home">커리큘럼</a>${S.map(s=>`<a href="#s${s.id}">${s.id}</a>`).join("")}<a href="#prep">준비 · 예산</a>`;
+function render(){
+  const key=(location.hash||"#home").slice(1);
+  const v=views[key]?key:"home";
+  app.innerHTML=views[v]();
+  nav.querySelectorAll("a").forEach(a=>{if(a.getAttribute("href")==="#"+v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",render);
+render();
+</script>
